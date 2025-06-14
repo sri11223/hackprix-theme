@@ -1,40 +1,30 @@
 import Link from 'next/link'
-import {ResizableNavbar} from './components/Header/Navbar';
-import {HeroParallax} from './components/Home/Home';
+import { HeroParallax } from './components/Home/Home';
+
+const navLinks = [
+  { name: 'Home', href: '/' },
+  { name: 'Startups', href: '/startups' },
+  { name: 'Investors', href: '/investors' },
+  { name: 'Stats', href: '/stats' },
+  { name: 'About', href: '/about' },
+];
+
 export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Navigation Bar */}
-      <HeroParallax/>
-
-      {/* Hero Section */}
-      {/* <main className="container mx-auto py-16 text-center">
-        <h1 className="text-4xl font-bold mb-4">
-          Welcome to <span className="text-blue-600">StartupHub</span>
-        </h1>
-        <p className="text-lg mb-8">
-          The AI-powered platform connecting startups and investors
-        </p>
-        <div className="flex justify-center gap-4">
-          <Link 
-            href="/login" 
-            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+      <nav className="flex gap-8 px-8 py-4 border-b border-gray-200 bg-white">
+        {navLinks.map(link => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="text-gray-700 hover:text-blue-600 transition-colors font-semibold"
           >
-            Get Started
+            {link.name}
           </Link>
-        </div>
-      </main> */}
+        ))}
+      </nav>
+      <HeroParallax />
     </div>
-  )
-}
-
-function NavLink({ href, children }: { href: string; children: string }) {
-  return (
-    <Link 
-      href={href}
-      className="text-gray-700 hover:text-blue-600 transition-colors"
-    >
-      {children}
-    </Link>
   )
 }

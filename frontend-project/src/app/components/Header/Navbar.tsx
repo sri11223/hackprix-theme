@@ -81,7 +81,7 @@ export function ResizableNavbar() {
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-pink-500 transition-all duration-300 group-hover:w-full"></span>
                 </a>
               ))}
-              <div className="flex space-x-4 ml-6">
+              <div className="flex space-x-4 ml-6 items-center">
                 <a
                   href="/login"
                   className="px-4 py-2 text-lg font-medium text-pink-600 hover:bg-pink-50 rounded-lg transition-all duration-300 hover:scale-[1.02] font-['Inter']"
@@ -90,9 +90,21 @@ export function ResizableNavbar() {
                 </a>
                 <a
                   href="/register"
-                  className="px-4 py-2 text-lg font-medium text-white bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] font-['Inter'] hover:from-pink-600 hover:to-purple-600"
+                  className="relative px-6 py-3 text-lg font-medium text-purple-600 hover:text-purple-700 transition-all duration-300 group"
                 >
-                  Get Started
+                  <span className="relative z-10 flex items-center">
+                    Get Started
+                    <svg 
+                      className="w-4 h-4 ml-2 transition-all duration-300 transform -translate-x-1 group-hover:translate-x-0" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24" 
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </span>
+                  <span className="absolute top-0 left-0 w-10 h-10 rounded-full bg-purple-100 opacity-0 group-hover:opacity-100 group-hover:w-full group-hover:h-full transition-all duration-300 -z-1"></span>
                 </a>
               </div>
             </div>
@@ -140,9 +152,21 @@ export function ResizableNavbar() {
                   </a>
                   <a
                     href="/register"
-                    className="block px-4 py-3 text-center text-white bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 font-['Inter'] text-lg hover:from-pink-600 hover:to-purple-600"
+                    className="relative block px-4 py-3 text-center text-purple-600 hover:text-purple-700 transition-all duration-300 group"
                   >
-                    Get Started
+                    <span className="relative z-10 flex items-center justify-center">
+                      Get Started
+                      <svg 
+                        className="w-4 h-4 ml-2 transition-all duration-300 transform -translate-x-1 group-hover:translate-x-0" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24" 
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    </span>
+                    <span className="absolute top-0 left-1/4 w-10 h-10 rounded-full bg-purple-100 opacity-0 group-hover:opacity-100 group-hover:w-3/4 group-hover:h-full transition-all duration-300 -z-1"></span>
                   </a>
                 </div>
               </div>
