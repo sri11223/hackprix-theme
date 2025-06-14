@@ -1,7 +1,10 @@
 // Import necessary modules
-const User = require("../models/usermodel"); // User model for database interaction
+const { User, Individual, Startup, Investor } = require("../models/usermodel"); // Updated import for discriminators
 const bcrypt = require('bcryptjs'); // Library for hashing passwords
 const jwt = require('jsonwebtoken'); // Library for creating JSON Web Tokens
+const redis = require('../utility/redis').default || require('../utility/redis'); // Support both CommonJS and ESModule
+const { sendUserRegisteredEvent } = require('../utility/kafka'); // Import Kafka utility
+const { sendWelcomeEmail } = require('../utility/mailer'); // Import mailer utility
 
 // Home Route
 const home = async (req, res) => {
@@ -17,18 +20,23 @@ const home = async (req, res) => {
 // Register Route
 const register = async (req, res) => {
   try {
-    const { 
-      userType, 
-      firstName, 
-      lastName, 
-      username, 
-      email, 
-      phone, 
-      password 
+    const {
+      userType,
+      firstName,
+      lastName,
+      username,
+      email,
+      phone,
+      password,
+      ...rest
     } = req.body;
 
+    // Check if username is provided and not null/empty
+    if (!username || typeof username !== 'string' || username.trim() === '') {
+      return res.status(400).json({ msg: "Username is required and cannot be empty" });
+    }
     // Check if user already exists
-    const userExist = await User.findOne({ email });
+    const userExist = await User.findOne({ $or: [{ email }, { username }, { phone }] });
     if (userExist) {
       return res.status(400).json({ msg: "User already exists" });
     }
@@ -36,28 +44,62 @@ const register = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new user with all fields
-    const user = await User.create({
+    // Prepare base user data
+    const baseUserData = {
       userType,
       firstName,
       lastName,
       username,
       email,
       phone,
-      password: hashedPassword,
-    });
+      password: hashedPassword
+    };
+
+    let user;
+    // Create user based on type
+    if (userType === 'INDIVIDUAL') {
+      user = await Individual.create({ ...baseUserData, ...rest });
+    } else if (userType === 'STARTUP') {
+      user = await Startup.create({ ...baseUserData, ...rest });
+    } else if (userType === 'INVESTOR') {
+      user = await Investor.create({ ...baseUserData, ...rest });
+    } else {
+      user = await User.create(baseUserData);
+    }
+
+    // Send Kafka event
+    try {
+      await sendUserRegisteredEvent({
+        userId: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        userType: user.userType
+      });
+      console.log('Kafka event sent for user registration');
+    } catch (kafkaErr) {
+      console.error('Kafka event error:', kafkaErr);
+    }
+
+    // Send welcome email
+    try {
+      await sendWelcomeEmail(user.email, user.firstName);
+      console.log('Welcome email sent');
+    } catch (emailErr) {
+      console.error('Error sending welcome email:', emailErr);
+    }
 
     // Generate token
     const token = jwt.sign(
-      { 
-        userId: user._id, 
-        userType: user.userType 
+      {
+        userId: user._id,
+        userType: user.userType
       },
       process.env.JWT_SECRET || 'your_secret_key',
       { expiresIn: '1h' }
     );
 
-    console.log("User registered successfully");
+    // Optionally cache the user profile
+    await redis.set(`cache:/api/auth/profile:${user._id}`, JSON.stringify(user), 'EX', 300);
 
     return res.status(201).json({
       msg: "User registered successfully",
@@ -65,7 +107,6 @@ const register = async (req, res) => {
       userId: user._id.toString(),
       userType: user.userType
     });
-
   } catch (error) {
     console.error("Error during registration:", error);
     return res.status(500).json({ message: error.message });
@@ -76,7 +117,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const userExist = await User.findOne({ email });
+    const userExist = await User.findOne({ email }).select('+password');
 
     if (!userExist) {
       return res.status(401).json({ msg: "User does not exist" });
@@ -88,9 +129,9 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { 
-        userId: userExist._id, 
-        userType: userExist.userType 
+      {
+        userId: userExist._id,
+        userType: userExist.userType
       },
       process.env.JWT_SECRET || 'your_secret_key',
       { expiresIn: '1h' }
@@ -104,7 +145,6 @@ const login = async (req, res) => {
       firstName: userExist.firstName,
       lastName: userExist.lastName
     });
-
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ message: error.message });
@@ -114,16 +154,34 @@ const login = async (req, res) => {
 // Institutes Route
 const institutes = async (req, res) => {
   try {
-    // Query the database for users with userType 'Institute' and only retrieve their usernames
-    const institutes = await User.find({ userType: 'Institute' }, 'username'); // Fetch usernames of all institutes
-    console.log("Finding institutes..."); // Log the action for debugging
-    res.status(200).json(institutes); // Return the list of institutes with a 200 OK response
+    // Query the database for users with userType 'STARTUP' and only retrieve their companyName
+    const startups = await Startup.find({}, 'companyName');
+    res.status(200).json(startups);
   } catch (error) {
-    // If an error occurs, log the error and send a 500 response
-    console.error("Error fetching institutes:", error); // Log the error for debugging
-    res.status(500).json({ msg: "Error fetching institutes" }); // Send an error response with a 500 status
+    console.error("Error fetching startups:", error);
+    res.status(500).json({ msg: "Error fetching startups" });
+  }
+};
+
+// Update Profile Route
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const updates = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updates,
+      { new: true }
+    ).select('-password');
+
+    // Invalidate the cache for this user's profile
+    await redis.del(`cache:/api/auth/profile:${userId}`);
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
   }
 };
 
 // Export the route handlers for use in other parts of the application
-module.exports = { home, register, login, institutes };
+module.exports = { home, register, login, institutes, updateProfile };

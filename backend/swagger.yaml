@@ -1,0 +1,313 @@
+openapi: 3.0.0
+info:
+  title: Hackprix API
+  version: 1.0.0
+  description: API documentation for the Hackprix backend
+servers:
+  - url: http://localhost:5000/api
+    description: Local server for development
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        userType:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userType:
+                  type: string
+                  example: founder
+                firstName:
+                  type: string
+                  example: John
+                lastName:
+                  type: string
+                  example: Doe
+                username:
+                  type: string
+                  example: johndoe
+                email:
+                  type: string
+                  example: john@example.com
+                phone:
+                  type: string
+                  example: '+1234567890'
+                password:
+                  type: string
+                  example: strongpassword
+            examples:
+              founder:
+                summary: Founder registration
+                value:
+                  userType: founder
+                  firstName: John
+                  lastName: Doe
+                  username: johndoe
+                  email: john@example.com
+                  phone: '+1234567890'
+                  password: strongpassword
+              investor:
+                summary: Investor registration
+                value:
+                  userType: investor
+                  firstName: Alice
+                  lastName: Smith
+                  username: alicesmith
+                  email: alice@example.com
+                  phone: '+1987654321'
+                  password: anotherpassword
+              minimal:
+                summary: Minimal valid registration
+                value:
+                  userType: founder
+                  firstName: Bob
+                  lastName: Lee
+                  username: boblee
+                  email: bob@example.com
+                  phone: '+1122334455'
+                  password: pass1234
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: User already exists or invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                userExists:
+                  value:
+                    message: User already exists
+                invalidInput:
+                  value:
+                    message: Invalid input
+  /auth/login:
+    post:
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+            examples:
+              example:
+                value:
+                  email: john@example.com
+                  password: strongpassword
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidCreds:
+                  value:
+                    message: Invalid credentials
+  /auth/profile:
+    get:
+      summary: Get user profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unauthorized:
+                  value:
+                    message: Unauthorized
+    patch:
+      summary: Update user profile
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                phone:
+                  type: string
+            examples:
+              example:
+                value:
+                  firstName: Jane
+                  lastName: Doe
+                  phone: '+1234567890'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidInput:
+                  value:
+                    message: Invalid input
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unauthorized:
+                  value:
+                    message: Unauthorized
+    delete:
+      summary: Delete user profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                deleted:
+                  value:
+                    message: User deleted successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unauthorized:
+                  value:
+                    message: Unauthorized
+  /auth/logout:
+    post:
+      summary: Logout user
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                logout:
+                  value:
+                    message: Logout successful
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                unauthorized:
+                  value:
+                    message: Unauthorized
+  /stats:
+    get:
+      summary: Get platform statistics
+      responses:
+        '200':
+          description: Platform stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalUsers:
+                    type: integer
+                  activeUsers:
+                    type: integer
+                  startups:
+                    type: integer
+              examples:
+                stats:
+                  value:
+                    totalUsers: 100
+                    activeUsers: 80
+                    startups: 20
