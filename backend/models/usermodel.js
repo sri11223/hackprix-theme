@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     unique: true,
-    match: [/^[6-9]\d{9}$/, 'Please enter valid Indian phone number']
   },
   password: {
     type: String,
@@ -27,9 +26,10 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, trim: true },
   userType: {
     type: String,
-    enum: ['INDIVIDUAL', 'INVESTOR', 'STARTUP', 'SPECTATOR'],
+    enum: ['INDIVIDUAL', 'INVESTOR', 'STARTUP'],
     default: null,
-    required: false // Explicitly not required at registration
+    required: false,
+    discriminatorKey: true // Explicitly mark as discriminator
   },
   profileCompleted: { type: Boolean, default: false },
   isVerified: { type: Boolean, default: false },
