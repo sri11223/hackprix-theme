@@ -24,9 +24,9 @@ const validate = (schema) => async (req, res, next) => {
 }
 
 const validateRegistration = (req, res, next) => {
-    const { firstName, lastName, email, password, phone, userType, username } = req.body;
+    const { firstName, lastName, email, password, phone, username } = req.body;
 
-    if (!firstName || !lastName || !email || !password || !phone || !userType || !username) {
+    if (!firstName || !lastName || !email || !password || !phone || !username) {
         return res.status(400).json({ msg: "All fields are required" });
     }
 

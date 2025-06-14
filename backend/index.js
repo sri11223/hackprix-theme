@@ -46,7 +46,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use('/api/auth', limiter); // Apply rate limiting to auth routes
 
@@ -54,10 +56,12 @@ app.use('/api/auth', limiter); // Apply rate limiting to auth routes
 const authrouter = require("./router/auth-router");
 const contactrouter = require("./router/contact-router");
 const foodrouter = require("./router/food-router"); // Pass io
+const profilerouter = require("./router/profile-router");
 
 app.use("/api/auth", authrouter);
 app.use("/api/form", contactrouter);
 app.use("/api/food", foodrouter);
+app.use("/api/profile", profilerouter);
 
 
 // Socket.io setup

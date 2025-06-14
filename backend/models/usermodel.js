@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true,
+    
     unique: true,
     lowercase: true,
     trim: true,
@@ -15,22 +15,21 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: true,
     unique: true,
     match: [/^[6-9]\d{9}$/, 'Please enter valid Indian phone number']
   },
   password: {
     type: String,
-    required: true,
     minlength: 6,
     select: false
   },
-  firstName: { type: String, required: true, trim: true },
-  lastName: { type: String, required: true, trim: true },
+  firstName: { type: String, trim: true },
+  lastName: { type: String, trim: true },
   userType: {
     type: String,
     enum: ['INDIVIDUAL', 'INVESTOR', 'STARTUP', 'SPECTATOR'],
-    default: null
+    default: null,
+    required: false // Explicitly not required at registration
   },
   profileCompleted: { type: Boolean, default: false },
   isVerified: { type: Boolean, default: false },
@@ -46,7 +45,6 @@ const userSchema = new mongoose.Schema({
   lastLogin: Date,
   username: {
     type: String,
-    required: true,
     unique: true,
     trim: true
   }
@@ -68,9 +66,9 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 // 2️⃣ Individual Schema
 // =========================
 const individualSchema = new mongoose.Schema({
-  profilePicture: { type: String, required: true },
-  age: { type: Number, required: true, min: 18 },
-  gender: { type: String, enum: ['MALE', 'FEMALE', 'OTHER'], required: true },
+  profilePicture: { type: String, },
+  age: { type: Number,  min: 18 },
+  gender: { type: String, enum: ['MALE', 'FEMALE', 'OTHER'], },
   resumeUrl: String,
   skills: [String],
   bio: String,
@@ -105,12 +103,12 @@ const individualSchema = new mongoose.Schema({
 // 3️⃣ Startup Schema
 // =========================
 const startupSchema = new mongoose.Schema({
-  companyName: { type: String, required: true, unique: true, trim: true },
-  description: { type: String, required: true },
+  companyName: { type: String,  unique: true, trim: true },
+  description: { type: String, },
   verification: {
     documents: {
-      incorporationCertificate: { type: String, required: true },
-      panCard: { type: String, required: true },
+      incorporationCertificate: { type: String, },
+      panCard: { type: String },
       gstCertificate: String,
       bankStatement: String
     },
@@ -118,9 +116,9 @@ const startupSchema = new mongoose.Schema({
     verifiedAt: Date,
     rejectionReason: String
   },
-  domains: [{ type: String, required: true }],
-  stage: { type: String, enum: ['IDEA', 'PROTOTYPE', 'MVP', 'EARLY_REVENUE', 'GROWTH'], required: true },
-  teamSize: { type: Number, required: true, min: 1 },
+  domains: [{ type: String, }],
+  stage: { type: String, enum: ['IDEA', 'PROTOTYPE', 'MVP', 'EARLY_REVENUE', 'GROWTH'], },
+  teamSize: { type: Number,  min: 1 },
   funding: {
     totalRaised: { type: Number, default: 0 },
     currentlyRaising: { type: Boolean, default: false },
@@ -155,12 +153,11 @@ const investorSchema = new mongoose.Schema({
   investorType: {
     type: String,
     enum: ['ANGEL', 'VC_FIRM', 'CORPORATE', 'FAMILY_OFFICE', 'INDIVIDUAL'],
-    required: true
-  },
+      },
   verification: {
     documents: {
-      identityProof: { type: String, required: true },
-      incomeProof: { type: String, required: true },
+      identityProof: { type: String, },
+      incomeProof: { type: String, },
       investmentHistory: String,
       accreditationCertificate: String
     },
@@ -175,11 +172,11 @@ const investorSchema = new mongoose.Schema({
     experience: Number
   },
   preferences: {
-    sectors: [{ type: String, required: true }],
+    sectors: [{ type: String, }],
     stages: [{ type: String, enum: ['IDEA', 'PROTOTYPE', 'MVP', 'EARLY_REVENUE', 'GROWTH'] }],
     ticketSize: {
-      min: { type: Number, required: true },
-      max: { type: Number, required: true },
+      min: { type: Number, },
+      max: { type: Number, },
       currency: { type: String, default: 'INR' }
     },
     geographicPreference: [String],
@@ -203,11 +200,11 @@ const investorSchema = new mongoose.Schema({
 // 5️⃣ Application Schema
 // =========================
 const applicationSchema = new mongoose.Schema({
-  applicant: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  startup: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  position: { type: String, required: true },
+  applicant: { type: mongoose.Schema.Types.ObjectId, ref: 'User', },
+  startup: { type: mongoose.Schema.Types.ObjectId, ref: 'User', },
+  position: { type: String, },
   coverLetter: String,
-  resumeUrl: { type: String, required: true },
+  resumeUrl: { type: String, },
   additionalDocuments: [String],
   status: { type: String, enum: ['PENDING', 'REVIEWED', 'SHORTLISTED', 'REJECTED', 'ACCEPTED'], default: 'PENDING' },
   feedback: String,
@@ -219,11 +216,11 @@ const applicationSchema = new mongoose.Schema({
 // 6️⃣ Investment Request Schema
 // =========================
 const investmentRequestSchema = new mongoose.Schema({
-  startup: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  investor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  requestedAmount: { type: Number, required: true },
-  equityOffered: { type: Number, required: true, min: 0, max: 100 },
-  useOfFunds: { type: String, required: true },
+  startup: { type: mongoose.Schema.Types.ObjectId, ref: 'User', },
+  investor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', },
+  requestedAmount: { type: Number, },
+  equityOffered: { type: Number,  min: 0, max: 100 },
+  useOfFunds: { type: String, },
   pitchDeck: String,
   businessPlan: String,
   status: { type: String, enum: ['PENDING', 'UNDER_REVIEW', 'INTERESTED', 'REJECTED', 'FUNDED'], default: 'PENDING' },
@@ -236,18 +233,17 @@ const investmentRequestSchema = new mongoose.Schema({
 // 7️⃣ Pitch Session Schema
 // =========================
 const pitchSessionSchema = new mongoose.Schema({
-  pitcher: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  pitcher: { type: mongoose.Schema.Types.ObjectId, ref: 'User', },
   audience: [{
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     userType: { type: String, enum: ['INVESTOR', 'STARTUP'] }
   }],
-  title: { type: String, required: true },
-  description: { type: String, required: true },
+  title: { type: String, },
+  description: { type: String, },
   category: {
     type: String,
     enum: ['BUSINESS_IDEA', 'COLLABORATION', 'INVESTMENT_OPPORTUNITY', 'SKILL_SHOWCASE'],
-    required: true
-  },
+      },
   documents: {
     presentation: String,
     businessPlan: String,
@@ -272,8 +268,8 @@ const pitchSessionSchema = new mongoose.Schema({
 // 8️⃣ Connection Request Schema
 // =========================
 const connectionRequestSchema = new mongoose.Schema({
-  from: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  to: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  from: { type: mongoose.Schema.Types.ObjectId, ref: 'User', },
+  to: { type: mongoose.Schema.Types.ObjectId, ref: 'User', },
   message: String,
   status: { type: String, enum: ['PENDING', 'ACCEPTED', 'REJECTED'], default: 'PENDING' },
   requestedAt: { type: Date, default: Date.now },

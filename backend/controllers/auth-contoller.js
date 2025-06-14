@@ -21,7 +21,6 @@ const home = async (req, res) => {
 const register = async (req, res) => {
   try {
     const {
-      userType,
       firstName,
       lastName,
       username,
@@ -36,9 +35,13 @@ const register = async (req, res) => {
       return res.status(400).json({ msg: "Username is required and cannot be empty" });
     }
     // Check if user already exists
-    const userExist = await User.findOne({ $or: [{ email }, { username }, { phone }] });
+    const userExist = await User.findOne({ $or: [{ email }, { username }, ] });
     if (userExist) {
       return res.status(400).json({ msg: "User already exists" });
+    }
+    // Check for missing fields
+    if (!firstName || !lastName || !email || !password || !phone) {
+      return res.status(400).json({ msg: "All fields are required" });
     }
 
     // Hash the password
@@ -46,7 +49,6 @@ const register = async (req, res) => {
 
     // Prepare base user data
     const baseUserData = {
-      userType,
       firstName,
       lastName,
       username,
@@ -56,16 +58,8 @@ const register = async (req, res) => {
     };
 
     let user;
-    // Create user based on type
-    if (userType === 'INDIVIDUAL') {
-      user = await Individual.create({ ...baseUserData, ...rest });
-    } else if (userType === 'STARTUP') {
-      user = await Startup.create({ ...baseUserData, ...rest });
-    } else if (userType === 'INVESTOR') {
-      user = await Investor.create({ ...baseUserData, ...rest });
-    } else {
-      user = await User.create(baseUserData);
-    }
+    // Only create a base user at registration (no userType/discriminator)
+    user = await User.create(baseUserData);
 
     // Send Kafka event
     try {
@@ -73,7 +67,6 @@ const register = async (req, res) => {
         userId: user._id,
         email: user.email,
         firstName: user.firstName,
-        userType: user.userType
       });
       console.log('Kafka event sent for user registration');
     } catch (kafkaErr) {
@@ -91,11 +84,11 @@ const register = async (req, res) => {
     // Generate token
     const token = jwt.sign(
       {
-        userId: user._id,
-        userType: user.userType
+        userId: user._id
+        // userType is not included at registration
       },
       process.env.JWT_SECRET || 'your_secret_key',
-      { expiresIn: '1h' }
+      { expiresIn: '7d' } // Changed to 7 days
     );
 
     // Optionally cache the user profile
@@ -105,7 +98,7 @@ const register = async (req, res) => {
       msg: "User registered successfully",
       token: token,
       userId: user._id.toString(),
-      userType: user.userType
+      // Remove userType from response for now, since it's not set at registration
     });
   } catch (error) {
     console.error("Error during registration:", error);
@@ -128,14 +121,21 @@ const login = async (req, res) => {
       return res.status(401).json({ msg: "Invalid password" });
     }
 
+    console.log('Creating token for user:', { 
+      id: userExist._id, 
+      userType: userExist.userType 
+    });
+    
     const token = jwt.sign(
       {
         userId: userExist._id,
         userType: userExist.userType
       },
       process.env.JWT_SECRET || 'your_secret_key',
-      { expiresIn: '1h' }
+      { expiresIn: '7d' }
     );
+    
+    console.log('Generated token:', token);
 
     return res.status(200).json({
       msg: "Login successful",

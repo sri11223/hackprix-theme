@@ -64,13 +64,11 @@ export default function Login() {
         localStorage.setItem('rememberedEmail', formData.email);
       } else {
         localStorage.removeItem('rememberedEmail');
-      }
-
-      // Store tokens and user info in cookies
-      Cookies.set('token', data.token, { expires: 1/24 }); // Expires in 1 hour
-      Cookies.set('userType', data.userType);
-      Cookies.set('userId', data.userId);
-      Cookies.set('username', data.username);
+      }      // Store tokens and user info in cookies
+      Cookies.set('token', data.token, { expires: 7 }); // Expires in 7 days
+      Cookies.set('userType', data.userType, { expires: 7 });
+      Cookies.set('userId', data.userId, { expires: 7 });
+      Cookies.set('username', data.username, { expires: 7 });
 
       // Dismiss loading toast and show success
       toast.dismiss(loadingToast);
