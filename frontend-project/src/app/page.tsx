@@ -7,6 +7,8 @@ const navLinks = [
   { name: 'Investors', href: '/investors' },
   { name: 'Stats', href: '/stats' },
   { name: 'About', href: '/about' },
+   { name: 'Login', href: '/login' },
+    { name: 'Register', href: '/register' },
 ];
 
 export default function Home() {

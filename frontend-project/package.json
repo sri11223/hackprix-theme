@@ -16,6 +16,7 @@
     "@react-three/drei": "^10.2.0",
     "@react-three/fiber": "^9.0.0-alpha.8",
     "@tabler/icons-react": "^3.34.0",
+    "@types/js-cookie": "^3.0.6",
     "@types/react-bootstrap": "^1.0.1",
     "axios": "^1.9.0",
     "bootstrap": "^5.3.6",
@@ -23,6 +24,7 @@
     "clsx": "^2.1.1",
     "dotted-map": "^2.2.3",
     "framer-motion": "^12.18.1",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.515.0",
     "motion": "^12.18.1",
     "next": "15.3.3",
@@ -43,12 +45,12 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "^20.19.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   }
 }

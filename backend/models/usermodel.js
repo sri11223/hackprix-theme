@@ -1,12 +1,19 @@
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
-const { z } = require('zod');
 
 const schema = new mongoose.Schema({
     userType: {
         type: String,
         required: true,
-        enum: ['NGO', 'Institute']
+        enum: ['Startup', 'Investor', 'JobSeeker', 'Recruiter', 'Freelancer']
+    },
+    firstName: {
+        type: String,
+        required: true
+    },
+    lastName: {
+        type: String,
+        required: true
     },
     username: {
         type: String,
@@ -22,17 +29,6 @@ const schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    address: {
-        street: { type: String, required: true },
-        city: { type: String, required: true },
-        state: { type: String, required: true },
-        zip: { type: String, required: true },
-    },
-    location: {
-        type: { type: String, enum: ['Point'], default: 'Point' },
-        coordinates: { type: [Number], required: true }, // [longitude, latitude]
-    },
-    
     password: {
         type: String,
         required: true

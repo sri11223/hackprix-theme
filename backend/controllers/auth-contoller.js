@@ -17,31 +17,45 @@ const home = async (req, res) => {
 // Register Route
 const register = async (req, res) => {
   try {
-    const { userType, username, email, phone, address, password, latitude, longitude } = req.body;
+    const { 
+      userType, 
+      firstName, 
+      lastName, 
+      username, 
+      email, 
+      phone, 
+      password 
+    } = req.body;
 
-    if (!latitude || !longitude) {
-      return res.status(400).json({ msg: "Location coordinates are required" });
-    }
-
+    // Check if user already exists
     const userExist = await User.findOne({ email });
     if (userExist) {
-      console.log(`User with email ${email} already exists`);
       return res.status(400).json({ msg: "User already exists" });
     }
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create new user with all fields
     const user = await User.create({
       userType,
+      firstName,
+      lastName,
       username,
       email,
       phone,
-      address,
       password: hashedPassword,
-      location: { type: "Point", coordinates: [longitude, latitude] }, // GeoJSON format
     });
 
-    const token = jwt.sign({ userId: user._id, userType: user.userType }, process.env.JWT_SECRET || 'your_secret_key', { expiresIn: '1h' });
+    // Generate token
+    const token = jwt.sign(
+      { 
+        userId: user._id, 
+        userType: user.userType 
+      },
+      process.env.JWT_SECRET || 'your_secret_key',
+      { expiresIn: '1h' }
+    );
 
     console.log("User registered successfully");
 
@@ -49,6 +63,7 @@ const register = async (req, res) => {
       msg: "User registered successfully",
       token: token,
       userId: user._id.toString(),
+      userType: user.userType
     });
 
   } catch (error) {
@@ -60,35 +75,34 @@ const register = async (req, res) => {
 // Login Route
 const login = async (req, res) => {
   try {
-    const {username, email, password } = req.body; // Use email instead of username
+    const { email, password } = req.body;
     const userExist = await User.findOne({ email });
-    console.log(req.body);
 
     if (!userExist) {
       return res.status(401).json({ msg: "User does not exist" });
     }
 
-    // Check password
     const isPasswordCorrect = await bcrypt.compare(password, userExist.password);
     if (!isPasswordCorrect) {
       return res.status(401).json({ msg: "Invalid password" });
     }
 
-    // Generate JWT Token
     const token = jwt.sign(
-      { userId: userExist._id, userType: userExist.userType },
-      process.env.JWT_SECRET || 'your_secret_key', 
+      { 
+        userId: userExist._id, 
+        userType: userExist.userType 
+      },
+      process.env.JWT_SECRET || 'your_secret_key',
       { expiresIn: '1h' }
     );
 
-    console.log("Login successful");
-
     return res.status(200).json({
       msg: "Login successful",
+      token: token,
       userType: userExist.userType,
-      token: token, 
-      username:userExist.username
-      
+      username: userExist.username,
+      firstName: userExist.firstName,
+      lastName: userExist.lastName
     });
 
   } catch (error) {
