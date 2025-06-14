@@ -8,7 +8,14 @@ import {
   MotionValue,
 } from "framer-motion";
 import { ResizableNavbar } from "@/app/components/Header/Navbar";
-
+import {FooterWithSocialLinks} from "@/app/components/Footer/Footer";
+import { GlobeComponent } from "@/app/components/Sections_Home/Globe"
+import {globeData} from "@/app/components/Sections_Home/globeData";
+import StatsSection from "../Sections_Home/stats";
+import { TestimonialsSection } from "../Sections_Home/testinomial";
+import ProcessSection from "../Sections_Home/process";
+import { CTASection } from "../Sections_Home/cta";
+import { ShowcaseSection } from "../Sections_Home/showcase";
 export const HeroParallax = () => {
   // High-quality startup-themed images
   const startupProducts = [
@@ -104,11 +111,11 @@ export const HeroParallax = () => {
   );
 
   return (
-    <>
+    <div className="relative">
       <ResizableNavbar />
       <div
         ref={ref}
-        className="h-[300vh] pt-40 overflow-hidden antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d] bg-gradient-to-b from-white to-pink-50"
+        className="h-[180vh] pt-40 overflow-hidden antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d] bg-gray-950"
       >
         <Header />
         <motion.div
@@ -145,30 +152,43 @@ export const HeroParallax = () => {
           </motion.div>
         </motion.div>
       </div>
-    </>
+      <StatsSection/>
+      <ProcessSection />
+      <ShowcaseSection/>
+        <TestimonialsSection />
+        
+        <CTASection />
+       <GlobeComponent 
+    data={globeData} 
+    // data={getStartupConnections()} // Use this for filtered view
+    height={700}
+  />
+  
+        <FooterWithSocialLinks />
+    </div>
   );
 };
 
 const Header = () => {
   return (
     <div className="max-w-7xl relative mx-auto py-20 md:py-40 px-4 w-full left-0 top-0">
-      <h1 className="text-4xl md:text-7xl font-bold text-gray-800 font-['Poppins']">
-        <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">Connect</span> with the <br /> Startup Ecosystem
+      <h1 className="text-4xl md:text-7xl font-bold text-white font-['Poppins']">
+        <span className="bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent">Connect</span> with the <br /> Startup Ecosystem
       </h1>
-      <p className="max-w-2xl text-lg md:text-xl mt-8 text-gray-600 font-['Inter']">
+      <p className="max-w-2xl text-lg md:text-xl mt-8 text-gray-300 font-['Inter']">
         Discover innovative startups, meet investors, find talent, and track industry 
         trends - all in one powerful platform designed for startup success.
       </p>
       <div className="flex gap-4 mt-12">
         <a
           href="/register"
-          className="px-6 py-3 text-lg font-medium text-white bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] font-['Inter'] hover:from-pink-600 hover:to-purple-600"
+          className="px-6 py-3 text-lg font-medium text-white bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] font-['Inter'] hover:from-pink-600 hover:to-purple-700"
         >
           Join Our Network
         </a>
         <a
           href="/explore"
-          className="px-6 py-3 text-lg font-medium text-gray-800 border-2 border-gray-800 rounded-lg hover:bg-gray-100 transition-all duration-300 hover:scale-[1.02] font-['Inter']"
+          className="px-6 py-3 text-lg font-medium text-white border-2 border-white rounded-lg hover:bg-white/10 transition-all duration-300 hover:scale-[1.02] font-['Inter']"
         >
           Explore Startups
         </a>
@@ -205,8 +225,8 @@ const ProductCard = ({
       >
         <img
           src={product.thumbnail}
-          height="600"
-          width="600"
+          height="800"
+          width="800"
           className="object-cover object-center absolute h-full w-full inset-0 group-hover/product:scale-105 transition-transform duration-300"
           alt={product.title}
         />
