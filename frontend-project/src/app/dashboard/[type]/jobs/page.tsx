@@ -27,8 +27,250 @@ interface ApplicationForm {
   linkedInUrl: string;
 }
 
-const staticJobs: Job[] = [
+
   // (Same staticJobs array as you posted, truncated here for brevity)
+const staticJobs: Job[] = [
+  {
+    id: '1',
+    title: 'Senior Frontend Developer',
+    company: 'Tech Innovators Inc.',
+    location: 'San Francisco, CA (Remote)',
+    type: 'Full-time',
+    salary: '$120,000 - $150,000',
+    skills: ['React', 'TypeScript', 'Next.js', 'GraphQL'],
+    description: 'We are looking for an experienced frontend developer to join our team.',
+    fullDescription: 'As a Senior Frontend Developer at Tech Innovators, you will be responsible for building and maintaining our web applications using modern technologies. You will work closely with our design and backend teams to create seamless user experiences.',
+    requirements: [
+      '5+ years of experience with React',
+      'Strong TypeScript skills',
+      'Experience with state management (Redux, Context API)',
+      'Familiarity with testing frameworks (Jest, Cypress)'
+    ],
+    benefits: [
+      'Competitive salary and equity',
+      'Fully remote work',
+      'Health, dental, and vision insurance',
+      'Unlimited PTO',
+      'Professional development budget'
+    ],
+    postedAt: '2023-05-15'
+  },
+  {
+    id: '2',
+    title: 'UX/UI Designer',
+    company: 'Creative Minds Agency',
+    location: 'New York, NY (Hybrid)',
+    type: 'Full-time',
+    salary: '$90,000 - $110,000',
+    skills: ['Figma', 'Sketch', 'Adobe XD', 'User Research'],
+    description: 'Join our design team to create beautiful and functional interfaces.',
+    fullDescription: 'As a UX/UI Designer at Creative Minds, you will be responsible for the entire design process from research to high-fidelity prototypes. You will collaborate with product managers and developers to deliver exceptional user experiences.',
+    requirements: [
+      '3+ years of UX/UI design experience',
+      'Portfolio showcasing your work',
+      'Experience with design systems',
+      'Knowledge of accessibility standards'
+    ],
+    benefits: [
+      'Flexible work arrangements',
+      'Annual bonus',
+      '401(k) matching',
+      'Monthly wellness stipend'
+    ],
+    postedAt: '2023-06-01'
+  },
+  // Add 8 more jobs with similar structure
+  {
+    id: '3',
+    title: 'Backend Engineer (Node.js)',
+    company: 'Data Systems Ltd.',
+    location: 'Remote',
+    type: 'Full-time',
+    salary: '$110,000 - $140,000',
+    skills: ['Node.js', 'Express', 'MongoDB', 'AWS'],
+    description: 'Looking for a backend engineer to build scalable APIs and services.',
+    fullDescription: 'As a Backend Engineer, you will design and implement robust APIs, optimize database performance, and ensure system reliability. You will work with our DevOps team to deploy and monitor services in production.',
+    requirements: [
+      '4+ years of Node.js experience',
+      'Strong database design skills',
+      'Experience with cloud platforms (AWS, GCP)',
+      'Knowledge of microservices architecture'
+    ],
+    benefits: [
+      'Fully remote work',
+      'Stock options',
+      'Generous equipment budget',
+      'Annual company retreat'
+    ],
+    postedAt: '2023-06-10'
+  },
+  {
+    id: '4',
+    title: 'Product Manager',
+    company: 'Growth Startups',
+    location: 'Austin, TX',
+    type: 'Full-time',
+    salary: '$100,000 - $130,000',
+    skills: ['Product Strategy', 'Roadmapping', 'Agile', 'User Stories'],
+    description: 'Lead product development for our SaaS platform.',
+    fullDescription: 'As a Product Manager, you will define product vision, gather requirements, and work with cross-functional teams to deliver value to our customers. You will analyze market trends and user feedback to prioritize features.',
+    requirements: [
+      '3+ years in product management',
+      'Experience with SaaS products',
+      'Strong analytical skills',
+      'Excellent communication skills'
+    ],
+    benefits: [
+      'Performance bonuses',
+      'Flexible PTO',
+      'Parental leave',
+      'Learning budget'
+    ],
+    postedAt: '2023-06-05'
+  },
+  {
+    id: '5',
+    title: 'DevOps Engineer',
+    company: 'Cloud Solutions',
+    location: 'Remote',
+    type: 'Contract',
+    salary: '$80 - $100/hr',
+    skills: ['Docker', 'Kubernetes', 'CI/CD', 'Terraform'],
+    description: 'Help us build and maintain our cloud infrastructure.',
+    fullDescription: 'As a DevOps Engineer, you will automate our deployment pipelines, monitor system health, and implement security best practices. You will work closely with development teams to optimize performance and reliability.',
+    requirements: [
+      '3+ years of DevOps experience',
+      'Strong scripting skills (Bash, Python)',
+      'Experience with container orchestration',
+      'Knowledge of infrastructure as code'
+    ],
+    benefits: [
+      'Flexible hours',
+      'Long-term contract',
+      'Remote work'
+    ],
+    postedAt: '2023-06-12'
+  },
+  {
+    id: '6',
+    title: 'Data Scientist',
+    company: 'AI Research Labs',
+    location: 'Boston, MA',
+    type: 'Full-time',
+    salary: '$130,000 - $160,000',
+    skills: ['Python', 'Machine Learning', 'Pandas', 'TensorFlow'],
+    description: 'Join our AI research team to build innovative models.',
+    fullDescription: 'As a Data Scientist, you will research and implement machine learning models, analyze large datasets, and collaborate with product teams to deploy solutions. You will stay current with the latest advancements in AI.',
+    requirements: [
+      'PhD or MS in Computer Science or related field',
+      '2+ years of ML experience',
+      'Strong Python skills',
+      'Publications in relevant conferences'
+    ],
+    benefits: [
+      'Research-focused environment',
+      'Conference travel budget',
+      'Cutting-edge hardware',
+      'Collaboration with academia'
+    ],
+    postedAt: '2023-06-08'
+  },
+  {
+    id: '7',
+    title: 'Marketing Specialist',
+    company: 'Digital Growth',
+    location: 'Chicago, IL (Hybrid)',
+    type: 'Full-time',
+    salary: '$70,000 - $90,000',
+    skills: ['SEO', 'Content Marketing', 'Social Media', 'Analytics'],
+    description: 'Drive our digital marketing efforts and growth strategies.',
+    fullDescription: 'As a Marketing Specialist, you will develop and execute digital marketing campaigns, analyze performance metrics, and optimize our online presence. You will work with creative teams to produce engaging content.',
+    requirements: [
+      '2+ years of digital marketing experience',
+      'Google Analytics certification',
+      'Content creation skills',
+      'Data-driven mindset'
+    ],
+    benefits: [
+      'Performance bonuses',
+      'Hybrid work model',
+      'Professional development',
+      'Team events'
+    ],
+    postedAt: '2023-06-15'
+  },
+  {
+    id: '8',
+    title: 'Customer Success Manager',
+    company: 'SaaS Solutions',
+    location: 'Remote',
+    type: 'Full-time',
+    salary: '$75,000 - $95,000',
+    skills: ['Customer Support', 'CRM', 'Onboarding', 'Retention'],
+    description: 'Help our customers succeed with our products.',
+    fullDescription: 'As a Customer Success Manager, you will onboard new clients, provide training and support, and identify opportunities for account growth. You will be the bridge between customers and our product team.',
+    requirements: [
+      '3+ years in customer success',
+      'Experience with SaaS products',
+      'Excellent communication skills',
+      'Problem-solving attitude'
+    ],
+    benefits: [
+      'Remote work',
+      'Uncapped commissions',
+      'Quarterly bonuses',
+      'Flexible schedule'
+    ],
+    postedAt: '2023-06-03'
+  },
+  {
+    id: '9',
+    title: 'iOS Developer',
+    company: 'Mobile First',
+    location: 'Seattle, WA',
+    type: 'Full-time',
+    salary: '$110,000 - $140,000',
+    skills: ['Swift', 'UIKit', 'SwiftUI', 'Combine'],
+    description: 'Build beautiful iOS applications for our users.',
+    fullDescription: 'As an iOS Developer, you will design and implement new features, optimize performance, and maintain our mobile applications. You will collaborate with designers to create pixel-perfect interfaces.',
+    requirements: [
+      '4+ years of iOS development',
+      'Strong Swift knowledge',
+      'Experience with modern architectures (MVVM, VIPER)',
+      'Published apps in App Store'
+    ],
+    benefits: [
+      'Annual tech upgrade',
+      'Conference attendance',
+      'Stock options',
+      'Gym membership'
+    ],
+    postedAt: '2023-06-07'
+  },
+  {
+    id: '10',
+    title: 'Cybersecurity Analyst',
+    company: 'Secure Networks',
+    location: 'Washington, DC',
+    type: 'Full-time',
+    salary: '$100,000 - $130,000',
+    skills: ['SIEM', 'Threat Detection', 'Incident Response', 'Compliance'],
+    description: 'Protect our systems from security threats.',
+    fullDescription: 'As a Cybersecurity Analyst, you will monitor our systems for vulnerabilities, respond to security incidents, and implement protective measures. You will conduct security audits and train staff on best practices.',
+    requirements: [
+      '3+ years in cybersecurity',
+      'Relevant certifications (CISSP, CISM)',
+      'Knowledge of compliance frameworks',
+      'Experience with security tools'
+    ],
+    benefits: [
+      'Security clearance sponsorship',
+      'Continuing education',
+      'Health benefits',
+      'Relocation assistance'
+    ],
+    postedAt: '2023-06-09'
+  }
 ];
 
 export default function JobsPage() {

@@ -1,133 +1,172 @@
 'use client';
 import { useState } from 'react';
+import { BookOpen, Mic, Users, Laptop2, Briefcase, MessageCircle, Lightbulb, CalendarClock, Podcast, Target, Smile } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
+interface Resource {
+  id: string;
+  title: string;
+  description: string;
+  type: 'workshop' | 'podcast' | 'mentorship' | 'course' | 'career' | 'qa' | 'webinar' | 'success' | 'motivation';
+  image: string;
 }
 
 export default function AdvicePage() {
-  const [messages, setMessages] = useState<Message[]>([
+  const [resources] = useState<Resource[]>([
     {
-      role: 'assistant',
-      content: 'Hi! I\'m your AI career advisor. I can help you with:\n- Career planning\n- Resume reviews\n- Interview preparation\n- Skill development\n\nWhat would you like to discuss?',
-      timestamp: new Date()
+      id: '1',
+      title: 'One-on-One Mentorship Sessions',
+      description: 'Get personalized guidance from industry professionals across various fields.',
+      type: 'mentorship',
+      image: '/images/mentorship.jpg'
+    },
+    {
+      id: '2',
+      title: 'Career Skills Workshop Series',
+      description: 'Participate in live sessions on resume building, interviewing, and professional growth.',
+      type: 'workshop',
+      image: '/images/workshop.jpg'
+    },
+    {
+      id: '3',
+      title: 'AI Career Talk Podcast',
+      description: 'Listen to insightful conversations with tech leaders and career coaches.',
+      type: 'podcast',
+      image: '/images/podcast.jpg'
+    },
+    {
+      id: '4',
+      title: 'Tech Industry Crash Course',
+      description: 'Learn the foundations of tech roles and startup culture in this interactive series.',
+      type: 'course',
+      image: '/images/course.jpg'
+    },
+    {
+      id: '5',
+      title: 'Job Seeker Bootcamp',
+      description: 'A practical program to prepare you for your job search with real-world scenarios.',
+      type: 'career',
+      image: '/images/bootcamp.jpg'
+    },
+    {
+      id: '6',
+      title: 'Live Q&A with Startup Founders',
+      description: 'Ask your questions directly to founders and learn from their journeys.',
+      type: 'qa',
+      image: '/images/qa.jpg'
+    },
+    {
+      id: '7',
+      title: 'Webinar: How to Nail Tech Interviews',
+      description: 'Join top hiring managers for live mock interview breakdowns and tips.',
+      type: 'webinar',
+      image: '/images/interview.jpg'
+    },
+    {
+      id: '8',
+      title: 'Motivation Monday',
+      description: 'Weekly audio drops to boost your career mindset and energy.',
+      type: 'motivation',
+      image: '/images/motivation.jpg'
+    },
+    {
+      id: '9',
+      title: 'Success Stories Vault',
+      description: 'Browse inspiring journeys from individuals who broke into tech.',
+      type: 'success',
+      image: '/images/success.jpg'
+    },
+    {
+      id: '10',
+      title: 'Focus & Productivity Hacks',
+      description: 'Short-form audio episodes on managing your time and career distractions.',
+      type: 'podcast',
+      image: '/images/productivity.jpg'
+    },
+    {
+      id: '11',
+      title: 'Ask Me Anything: Career Coaches',
+      description: 'Live interactive events with seasoned career mentors.',
+      type: 'qa',
+      image: '/images/ama.jpg'
+    },
+    {
+      id: '12',
+      title: 'Daily Inspiration Nuggets',
+      description: 'Get quick motivational quotes and stories to start your day.',
+      type: 'motivation',
+      image: '/images/quotes.jpg'
     }
   ]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim() || loading) return;
-
-    const userMessage: Message = {
-      role: 'user',
-      content: input,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setLoading(true);
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponse: Message = {
-        role: 'assistant',
-        content: getAIResponse(input),
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, aiResponse]);
-      setLoading(false);
-    }, 1000);
-  };
-
-  // Sample AI responses based on keywords (replace with actual AI integration)
-  const getAIResponse = (message: string) => {
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('resume')) {
-      return "Here are some tips for your resume:\n1. Keep it concise and well-structured\n2. Highlight quantifiable achievements\n3. Use action verbs\n4. Tailor it to each job application\n5. Include relevant keywords\n\nWould you like me to review your resume in detail?";
-    }
-    
-    if (lowerMessage.includes('interview')) {
-      return "To prepare for interviews:\n1. Research the company thoroughly\n2. Practice common questions\n3. Prepare STAR method responses\n4. Have questions ready for the interviewer\n5. Review the job description\n\nWould you like to do a mock interview?";
-    }
-    
-    if (lowerMessage.includes('skill') || lowerMessage.includes('learn')) {
-      return "Based on current market trends, these skills are in high demand:\n1. AI/Machine Learning\n2. Cloud Computing\n3. Data Analysis\n4. Full Stack Development\n5. DevOps\n\nWhich area interests you most?";
-    }
-
-    return "I can help you with career planning, resume reviews, interview preparation, and skill development. What specific aspect would you like to focus on?";
+  const iconMap = {
+    mentorship: <Users className="w-5 h-5" />, 
+    workshop: <BookOpen className="w-5 h-5" />, 
+    podcast: <Mic className="w-5 h-5" />,
+    course: <Laptop2 className="w-5 h-5" />,
+    career: <Briefcase className="w-5 h-5" />,
+    qa: <MessageCircle className="w-5 h-5" />,
+    webinar: <CalendarClock className="w-5 h-5" />,
+    motivation: <Smile className="w-5 h-5" />,
+    success: <Target className="w-5 h-5" />
   };
 
   return (
-    <div className="h-[calc(100vh-10rem)]">
+    <div className="min-h-screen">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">AI Career Advisor</h1>
-        <p className="text-gray-600">Get personalized career guidance and advice</p>
+        <h1 className="text-4xl font-bold text-gray-900 mb-3 font-['Poppins']">Career Resources</h1>
+        <p className="text-lg text-gray-600 font-['Inter']">
+          Explore mentorships, workshops, podcasts, and inspiration to elevate your career
+        </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm h-[calc(100%-6rem)] flex flex-col">
-        {/* Messages Container */}
-        <div className="flex-1 p-6 overflow-y-auto space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[80%] rounded-lg p-4 ${
-                  message.role === 'user'
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-gray-100 text-gray-800'
-                }`}
-              >
-                <div className="whitespace-pre-wrap">{message.content}</div>
-                <div className={`text-xs mt-2 ${
-                  message.role === 'user' ? 'text-indigo-200' : 'text-gray-500'
-                }`}>
-                  {message.timestamp.toLocaleTimeString()}
-                </div>
-              </div>
+      <motion.div 
+        className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.1
+            }
+          }
+        }}
+      >
+        {resources.map(resource => (
+          <motion.div
+            key={resource.id}
+            className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg group transition duration-300 border border-gray-100"
+            whileHover={{ scale: 1.04 }}
+            variants={{
+              hidden: { opacity: 0, y: 30 },
+              visible: { opacity: 1, y: 0 }
+            }}
+          >
+            <div className="relative overflow-hidden">
+              <img
+                src={resource.image}
+                alt={resource.title}
+                className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300" />
             </div>
-          ))}
-          {loading && (
-            <div className="flex justify-start">
-              <div className="bg-gray-100 rounded-lg p-4">
-                <div className="flex space-x-2">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                </div>
+            <div className="p-6">
+              <div className="flex items-center gap-2 mb-2 text-indigo-600 font-medium uppercase text-xs">
+                <motion.div
+                  whileHover={{ y: -3 }}
+                  transition={{ type: 'spring', stiffness: 200 }}
+                >
+                  {iconMap[resource.type]}
+                </motion.div>
+                {resource.type}
               </div>
+              <h2 className="text-lg font-semibold text-gray-800 mb-2">{resource.title}</h2>
+              <p className="text-sm text-gray-600">{resource.description}</p>
             </div>
-          )}
-        </div>
-
-        {/* Input Form */}
-        <form onSubmit={handleSubmit} className="p-4 border-t">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask for career advice..."
-              className="flex-1 p-3 border rounded-lg"
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              disabled={loading || !input.trim()}
-              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
-            >
-              Send
-            </button>
-          </div>
-        </form>
-      </div>
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
 }

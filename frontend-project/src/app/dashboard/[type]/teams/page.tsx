@@ -11,6 +11,7 @@ interface Team {
   equity: string;
   stage: string;
   location: string;
+  category: 'cofounder' | 'tech' | 'business';
 }
 
 export default function TeamsPage() {
@@ -24,7 +25,8 @@ export default function TeamsPage() {
       requirements: ['5+ years in full-stack', 'AI/ML experience', 'Team leadership'],
       equity: '2-3%',
       stage: 'Seed',
-      location: 'Remote'
+      location: 'Remote',
+      category: 'tech'
     },
     {
       id: '2',
@@ -35,11 +37,52 @@ export default function TeamsPage() {
       requirements: ['Clean tech background', 'Architecture skills', 'Startup experience'],
       equity: '15-20%',
       stage: 'Pre-seed',
-      location: 'San Francisco'
+      location: 'San Francisco',
+      category: 'cofounder'
+    },
+    {
+      id: '3',
+      startupName: 'FinNext',
+      logo: '💰',
+      role: 'Growth Strategist',
+      description: 'Help us scale a fintech product to the next level.',
+      requirements: ['B2B experience', 'Growth hacking', 'Partnerships'],
+      equity: '3-5%',
+      stage: 'Series A',
+      location: 'New York',
+      category: 'business'
+    },
+    {
+      id: '4',
+      startupName: 'EduSmart',
+      logo: '📚',
+      role: 'Curriculum Engineer',
+      description: 'Design smart learning paths using AI for school children.',
+      requirements: ['EdTech background', 'AI exposure', 'Content creation'],
+      equity: '5%',
+      stage: 'Seed',
+      location: 'Remote',
+      category: 'tech'
+    },
+    {
+      id: '5',
+      startupName: 'HealthVerse',
+      logo: '🧬',
+      role: 'Healthcare Co-Founder',
+      description: 'Seeking a visionary in healthcare to build decentralized health solutions.',
+      requirements: ['Medical domain knowledge', 'Blockchain exposure', 'Fundraising'],
+      equity: '20%',
+      stage: 'Pre-seed',
+      location: 'Boston',
+      category: 'cofounder'
     }
   ]);
 
   const [filter, setFilter] = useState('all');
+
+  const filteredTeams = teams.filter(team =>
+    filter === 'all' ? true : team.category === filter
+  );
 
   return (
     <div>
@@ -64,7 +107,7 @@ export default function TeamsPage() {
 
       {/* Teams Grid */}
       <div className="grid gap-6">
-        {teams.map(team => (
+        {filteredTeams.map(team => (
           <div key={team.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all">
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center gap-4">
@@ -124,3 +167,4 @@ export default function TeamsPage() {
     </div>
   );
 }
+//     </div>

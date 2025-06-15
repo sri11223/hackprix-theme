@@ -59,15 +59,24 @@ export default function DashboardLayout({
 
   const currentNavItems = navItems[userType as keyof typeof navItems] || [];
 
+  const handleLogout = () => {
+    Cookies.remove('token');
+    Cookies.remove('userType');
+    Cookies.remove('email');
+    // Add any additional cleanup if needed
+    router.push('/');
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md fixed h-full">
+      <aside className="w-64 bg-white shadow-md fixed h-full flex flex-col">
         <div className="p-6">
           <h2 className="text-2xl font-bold text-indigo-600">HackPrix</h2>
           <p className="text-sm text-gray-500 mt-1 capitalize">{userType.toLowerCase()} dashboard</p>
         </div>
-        <nav className="mt-6">
+
+        <nav className="mt-4 flex-1">
           {currentNavItems.map((item) => {
             const isActive = pathname.includes(item.path);
             return (
@@ -86,6 +95,16 @@ export default function DashboardLayout({
             );
           })}
         </nav>
+
+        {/* Logout Button */}
+        <div className="p-6 border-t">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-start gap-3 text-red-600 hover:text-white hover:bg-red-600 px-4 py-2 rounded-lg transition"
+          >
+            🚪 Logout
+          </button>
+        </div>
       </aside>
 
       {/* Main Content */}
@@ -94,4 +113,4 @@ export default function DashboardLayout({
       </main>
     </div>
   );
-}   
+}

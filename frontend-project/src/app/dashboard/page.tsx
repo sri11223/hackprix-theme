@@ -71,7 +71,7 @@ const userTypeQuestions: Record<string, Question[]> = {
       name: "stage", 
       label: "Current stage", 
       type: "select", 
-      options: ["Ideation", "Prototype", "MVP", "Early Revenue", "Growth"] 
+      options: ["IDEANTATION", "PROTOTYPE", "MVP", "EARLY REVENUE", "GROWTH", "SCALE"] 
     },
     { 
       name: "teamSize", 
