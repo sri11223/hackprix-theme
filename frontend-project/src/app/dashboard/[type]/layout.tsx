@@ -14,7 +14,6 @@ const navItems = {
   INVESTOR: [
     { label: 'Dashboard', path: 'main', icon: '📊' },
     { label: 'Discover', path: 'discover', icon: '🔍' },
-    { label: 'Portfolio', path: 'portfolio', icon: '💼' },
     { label: 'Pitch Arena', path: 'pitch-arena', icon: '🎤' },
     { label: 'Analytics', path: 'analytics', icon: '📈' },
       { label: 'AI', path: 'ai', icon: '🤖' },
