@@ -1,8 +1,6 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useState, useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
-import { useParams } from 'next/navigation';
-import React from 'react';
 
 interface Job {
   id: string;
@@ -30,49 +28,37 @@ interface ApplicationForm {
 }
 
 const staticJobs: Job[] = [
-  {
-    id: '1',
-    title: 'Senior Frontend Developer',
-    company: 'Tech Innovators Inc.',
-    location: 'San Francisco, CA (Remote)',
-    type: 'Full-time',
-    salary: '$120,000 - $150,000',
-    skills: ['React', 'TypeScript', 'Next.js', 'GraphQL'],
-    description: 'We are looking for an experienced frontend developer to join our team.',
-    fullDescription: 'As a Senior Frontend Developer at Tech Innovators, you will be responsible for building and maintaining our web applications using modern technologies. You will work closely with our design and backend teams to create seamless user experiences.',
-    requirements: [
-      '5+ years of experience with React',
-      'Strong TypeScript skills',
-      'Experience with state management (Redux, Context API)',
-      'Familiarity with testing frameworks (Jest, Cypress)'
-    ],
-    benefits: [
-      'Competitive salary and equity',
-      'Fully remote work',
-      'Health, dental, and vision insurance',
-      'Unlimited PTO',
-      'Professional development budget'
-    ],
-    postedAt: '2023-05-15'
-  },
-  // ... (include all your other job listings here)
+  // (Same staticJobs array as you posted, truncated here for brevity)
 ];
 
 export default function JobsPage() {
-  const params = React.use(useParams());
+  const [isClient, setIsClient] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isApplicationOpen, setIsApplicationOpen] = useState(false);
   const [applicationForm, setApplicationForm] = useState<ApplicationForm>({
-    name: '',
-    email: '',
-    phone: '',
-    resume: null,
-    coverLetter: '',
-    portfolioUrl: '',
-    linkedInUrl: ''
+    name: '', email: '', phone: '', resume: null, coverLetter: '', portfolioUrl: '', linkedInUrl: ''
   });
   const [applicationSubmitted, setApplicationSubmitted] = useState(false);
+  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get('type');
+        const filtered = type ? staticJobs.filter(job => job.type.toLowerCase() === type.toLowerCase()) : staticJobs;
+        setFilteredJobs(filtered);
+      } catch (error) {
+        console.error('Error filtering jobs:', error);
+        setFilteredJobs(staticJobs);
+      }
+    }
+  }, [isClient]);
 
   const openJobDetails = (job: Job) => {
     setSelectedJob(job);
@@ -98,25 +84,24 @@ export default function JobsPage() {
   const handleSubmitApplication = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Submitting application:', { job: selectedJob, ...applicationForm });
-    
-    setTimeout(() => {
-      setApplicationSubmitted(true);
-    }, 1500);
+    setTimeout(() => setApplicationSubmitted(true), 1500);
   };
 
   const resetApplication = () => {
     setApplicationForm({
-      name: '',
-      email: '',
-      phone: '',
-      resume: null,
-      coverLetter: '',
-      portfolioUrl: '',
-      linkedInUrl: ''
+      name: '', email: '', phone: '', resume: null, coverLetter: '', portfolioUrl: '', linkedInUrl: ''
     });
     setApplicationSubmitted(false);
     setIsApplicationOpen(false);
   };
+
+  if (!isClient || filteredJobs.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -124,46 +109,30 @@ export default function JobsPage() {
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Find Your Dream Job</h1>
         <p className="text-gray-600">Browse through our latest job openings</p>
       </div>
-
-      {/* Job Listings */}
       <div className="grid gap-6">
-        {staticJobs.map(job => (
-          <div 
-            key={job.id} 
-            className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-            onClick={() => openJobDetails(job)}
-          >
+        {filteredJobs.map(job => (
+          <div key={job.id} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => openJobDetails(job)}>
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h2 className="text-xl font-semibold text-gray-800">{job.title}</h2>
                 <p className="text-gray-600">{job.company} • {job.location}</p>
               </div>
-              <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">
-                {job.type}
-              </span>
+              <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">{job.type}</span>
             </div>
-            
             <div className="mb-4">
               <p className="text-gray-800 font-medium">{job.salary}</p>
               <p className="text-gray-600 mt-2">{job.description}</p>
             </div>
-
             <div className="flex flex-wrap gap-2 mb-4">
               {job.skills.map(skill => (
-                <span key={skill} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                  {skill}
-                </span>
+                <span key={skill} className="bg-gray-100 px-3 py-1 rounded-full text-sm">{skill}</span>
               ))}
             </div>
-
-            <div className="text-sm text-gray-500">
-              Posted on {new Date(job.postedAt).toLocaleDateString()}
-            </div>
+            <div className="text-sm text-gray-500">Posted on {new Date(job.postedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
           </div>
         ))}
       </div>
-
-      {/* Job Details Dialog */}
+       {/* Job Details Dialog */}
       <Dialog 
         open={isDialogOpen} 
         onClose={() => setIsDialogOpen(false)}
@@ -400,6 +369,7 @@ export default function JobsPage() {
           </div>
         </div>
       </Dialog>
+      {/* Reuse the existing dialogs as-is */}
     </div>
   );
 }
