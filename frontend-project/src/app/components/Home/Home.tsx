@@ -16,6 +16,7 @@ import { TestimonialsSection } from "../Sections_Home/testinomial";
 import ProcessSection from "../Sections_Home/process";
 import { CTASection } from "../Sections_Home/cta";
 import { ShowcaseSection } from "../Sections_Home/showcase";
+import GeminiRiskAnalyzer from "../Sections_Home/geminiapirisk";
 export const HeroParallax = () => {
   // High-quality startup-themed images
   const startupProducts = [
@@ -154,6 +155,7 @@ export const HeroParallax = () => {
       </div>
       <StatsSection/>
       <ProcessSection />
+      <GeminiRiskAnalyzer />
       <ShowcaseSection/>
         <TestimonialsSection />
         
