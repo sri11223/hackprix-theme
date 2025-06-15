@@ -1,0 +1,1336 @@
+{
+  "users": {
+    "individuals": [
+      {
+        "id": "ind_001",
+        "name": "User 1",
+        "email": "user1@example.com",
+        "skills": [
+          "MongoDB",
+          "TypeScript",
+          "SQL"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_015"
+        ],
+        "messages": [
+          {
+            "id": "msg_015",
+            "from": "ind_001",
+            "to": "startup_001",
+            "content": "Hi, I'm interested in Node.js Developer",
+            "timestamp": "2025-06-15T02:36:39.409491",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_002",
+        "name": "User 2",
+        "email": "user2@example.com",
+        "skills": [
+          "Python",
+          "MongoDB",
+          "React"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_001"
+        ],
+        "messages": [
+          {
+            "id": "msg_001",
+            "from": "ind_002",
+            "to": "startup_002",
+            "content": "Hi, I'm interested in AWS Developer",
+            "timestamp": "2025-06-15T02:36:39.409336",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_003",
+        "name": "User 3",
+        "email": "user3@example.com",
+        "skills": [
+          "Node.js",
+          "UI/UX",
+          "Python"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_002"
+        ],
+        "messages": [
+          {
+            "id": "msg_002",
+            "from": "ind_003",
+            "to": "startup_003",
+            "content": "Hi, I'm interested in DevOps Developer",
+            "timestamp": "2025-06-15T02:36:39.409355",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_004",
+        "name": "User 4",
+        "email": "user4@example.com",
+        "skills": [
+          "TypeScript",
+          "React",
+          "SQL"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_003"
+        ],
+        "messages": [
+          {
+            "id": "msg_003",
+            "from": "ind_004",
+            "to": "startup_004",
+            "content": "Hi, I'm interested in SQL Developer",
+            "timestamp": "2025-06-15T02:36:39.409363",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_005",
+        "name": "User 5",
+        "email": "user5@example.com",
+        "skills": [
+          "TypeScript",
+          "SQL",
+          "DevOps"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_004"
+        ],
+        "messages": [
+          {
+            "id": "msg_004",
+            "from": "ind_005",
+            "to": "startup_005",
+            "content": "Hi, I'm interested in AWS Developer",
+            "timestamp": "2025-06-15T02:36:39.409370",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_006",
+        "name": "User 6",
+        "email": "user6@example.com",
+        "skills": [
+          "Node.js",
+          "MongoDB",
+          "UI/UX"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_005"
+        ],
+        "messages": [
+          {
+            "id": "msg_005",
+            "from": "ind_006",
+            "to": "startup_006",
+            "content": "Hi, I'm interested in Python Developer",
+            "timestamp": "2025-06-15T02:36:39.409379",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_007",
+        "name": "User 7",
+        "email": "user7@example.com",
+        "skills": [
+          "UI/UX",
+          "TypeScript",
+          "AWS"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_006"
+        ],
+        "messages": [
+          {
+            "id": "msg_006",
+            "from": "ind_007",
+            "to": "startup_007",
+            "content": "Hi, I'm interested in AI/ML Developer",
+            "timestamp": "2025-06-15T02:36:39.409391",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_008",
+        "name": "User 8",
+        "email": "user8@example.com",
+        "skills": [
+          "UI/UX",
+          "TypeScript",
+          "DevOps"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_007"
+        ],
+        "messages": [
+          {
+            "id": "msg_007",
+            "from": "ind_008",
+            "to": "startup_008",
+            "content": "Hi, I'm interested in DevOps Developer",
+            "timestamp": "2025-06-15T02:36:39.409405",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_009",
+        "name": "User 9",
+        "email": "user9@example.com",
+        "skills": [
+          "Node.js",
+          "MongoDB",
+          "UI/UX"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_008"
+        ],
+        "messages": [
+          {
+            "id": "msg_008",
+            "from": "ind_009",
+            "to": "startup_009",
+            "content": "Hi, I'm interested in DevOps Developer",
+            "timestamp": "2025-06-15T02:36:39.409420",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_010",
+        "name": "User 10",
+        "email": "user10@example.com",
+        "skills": [
+          "Node.js",
+          "AI/ML",
+          "AWS"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_009"
+        ],
+        "messages": [
+          {
+            "id": "msg_009",
+            "from": "ind_010",
+            "to": "startup_010",
+            "content": "Hi, I'm interested in TypeScript Developer",
+            "timestamp": "2025-06-15T02:36:39.409429",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_011",
+        "name": "User 11",
+        "email": "user11@example.com",
+        "skills": [
+          "MongoDB",
+          "DevOps",
+          "UI/UX"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_010"
+        ],
+        "messages": [
+          {
+            "id": "msg_010",
+            "from": "ind_011",
+            "to": "startup_011",
+            "content": "Hi, I'm interested in AWS Developer",
+            "timestamp": "2025-06-15T02:36:39.409442",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_012",
+        "name": "User 12",
+        "email": "user12@example.com",
+        "skills": [
+          "AWS",
+          "Python",
+          "UI/UX"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_011"
+        ],
+        "messages": [
+          {
+            "id": "msg_011",
+            "from": "ind_012",
+            "to": "startup_012",
+            "content": "Hi, I'm interested in SQL Developer",
+            "timestamp": "2025-06-15T02:36:39.409451",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_013",
+        "name": "User 13",
+        "email": "user13@example.com",
+        "skills": [
+          "AWS",
+          "TypeScript",
+          "UI/UX"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_012"
+        ],
+        "messages": [
+          {
+            "id": "msg_012",
+            "from": "ind_013",
+            "to": "startup_013",
+            "content": "Hi, I'm interested in Python Developer",
+            "timestamp": "2025-06-15T02:36:39.409458",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_014",
+        "name": "User 14",
+        "email": "user14@example.com",
+        "skills": [
+          "Python",
+          "MongoDB",
+          "UI/UX"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_013"
+        ],
+        "messages": [
+          {
+            "id": "msg_013",
+            "from": "ind_014",
+            "to": "startup_014",
+            "content": "Hi, I'm interested in Python Developer",
+            "timestamp": "2025-06-15T02:36:39.409468",
+            "read": false
+          }
+        ]
+      },
+      {
+        "id": "ind_015",
+        "name": "User 15",
+        "email": "user15@example.com",
+        "skills": [
+          "Python",
+          "SQL",
+          "UI/UX"
+        ],
+        "savedJobs": [],
+        "applications": [
+          "app_014"
+        ],
+        "messages": [
+          {
+            "id": "msg_014",
+            "from": "ind_015",
+            "to": "startup_015",
+            "content": "Hi, I'm interested in MongoDB Developer",
+            "timestamp": "2025-06-15T02:36:39.409480",
+            "read": false
+          }
+        ]
+      }
+    ],
+    "startups": [
+      {
+        "id": "startup_001",
+        "name": "Startup 1",
+        "industry": "HealthTech",
+        "stage": "Seed",
+        "jobs": [
+          "job_001"
+        ],
+        "messages": [
+          {
+            "id": "msg_015",
+            "from": "ind_001",
+            "to": "startup_001",
+            "content": "Hi, I'm interested in Node.js Developer",
+            "timestamp": "2025-06-15T02:36:39.409491",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_002",
+        "name": "Startup 2",
+        "industry": "SaaS",
+        "stage": "Series B",
+        "jobs": [
+          "job_002"
+        ],
+        "messages": [
+          {
+            "id": "msg_001",
+            "from": "ind_002",
+            "to": "startup_002",
+            "content": "Hi, I'm interested in AWS Developer",
+            "timestamp": "2025-06-15T02:36:39.409336",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_003",
+        "name": "Startup 3",
+        "industry": "SaaS",
+        "stage": "Idea",
+        "jobs": [
+          "job_003"
+        ],
+        "messages": [
+          {
+            "id": "msg_002",
+            "from": "ind_003",
+            "to": "startup_003",
+            "content": "Hi, I'm interested in DevOps Developer",
+            "timestamp": "2025-06-15T02:36:39.409355",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_004",
+        "name": "Startup 4",
+        "industry": "HealthTech",
+        "stage": "Seed",
+        "jobs": [
+          "job_004"
+        ],
+        "messages": [
+          {
+            "id": "msg_003",
+            "from": "ind_004",
+            "to": "startup_004",
+            "content": "Hi, I'm interested in SQL Developer",
+            "timestamp": "2025-06-15T02:36:39.409363",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_005",
+        "name": "Startup 5",
+        "industry": "FinTech",
+        "stage": "Series B",
+        "jobs": [
+          "job_005"
+        ],
+        "messages": [
+          {
+            "id": "msg_004",
+            "from": "ind_005",
+            "to": "startup_005",
+            "content": "Hi, I'm interested in AWS Developer",
+            "timestamp": "2025-06-15T02:36:39.409370",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_006",
+        "name": "Startup 6",
+        "industry": "HealthTech",
+        "stage": "Series A",
+        "jobs": [
+          "job_006"
+        ],
+        "messages": [
+          {
+            "id": "msg_005",
+            "from": "ind_006",
+            "to": "startup_006",
+            "content": "Hi, I'm interested in Python Developer",
+            "timestamp": "2025-06-15T02:36:39.409379",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_007",
+        "name": "Startup 7",
+        "industry": "E-commerce",
+        "stage": "Series B",
+        "jobs": [
+          "job_007"
+        ],
+        "messages": [
+          {
+            "id": "msg_006",
+            "from": "ind_007",
+            "to": "startup_007",
+            "content": "Hi, I'm interested in AI/ML Developer",
+            "timestamp": "2025-06-15T02:36:39.409391",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_008",
+        "name": "Startup 8",
+        "industry": "HealthTech",
+        "stage": "Bootstrap",
+        "jobs": [
+          "job_008"
+        ],
+        "messages": [
+          {
+            "id": "msg_007",
+            "from": "ind_008",
+            "to": "startup_008",
+            "content": "Hi, I'm interested in DevOps Developer",
+            "timestamp": "2025-06-15T02:36:39.409405",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_009",
+        "name": "Startup 9",
+        "industry": "SaaS",
+        "stage": "Seed",
+        "jobs": [
+          "job_009"
+        ],
+        "messages": [
+          {
+            "id": "msg_008",
+            "from": "ind_009",
+            "to": "startup_009",
+            "content": "Hi, I'm interested in DevOps Developer",
+            "timestamp": "2025-06-15T02:36:39.409420",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_010",
+        "name": "Startup 10",
+        "industry": "E-commerce",
+        "stage": "Seed",
+        "jobs": [
+          "job_010"
+        ],
+        "messages": [
+          {
+            "id": "msg_009",
+            "from": "ind_010",
+            "to": "startup_010",
+            "content": "Hi, I'm interested in TypeScript Developer",
+            "timestamp": "2025-06-15T02:36:39.409429",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_011",
+        "name": "Startup 11",
+        "industry": "SaaS",
+        "stage": "Series B",
+        "jobs": [
+          "job_011"
+        ],
+        "messages": [
+          {
+            "id": "msg_010",
+            "from": "ind_011",
+            "to": "startup_011",
+            "content": "Hi, I'm interested in AWS Developer",
+            "timestamp": "2025-06-15T02:36:39.409442",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_012",
+        "name": "Startup 12",
+        "industry": "HealthTech",
+        "stage": "Seed",
+        "jobs": [
+          "job_012"
+        ],
+        "messages": [
+          {
+            "id": "msg_011",
+            "from": "ind_012",
+            "to": "startup_012",
+            "content": "Hi, I'm interested in SQL Developer",
+            "timestamp": "2025-06-15T02:36:39.409451",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_013",
+        "name": "Startup 13",
+        "industry": "E-commerce",
+        "stage": "Series B",
+        "jobs": [
+          "job_013"
+        ],
+        "messages": [
+          {
+            "id": "msg_012",
+            "from": "ind_013",
+            "to": "startup_013",
+            "content": "Hi, I'm interested in Python Developer",
+            "timestamp": "2025-06-15T02:36:39.409458",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_014",
+        "name": "Startup 14",
+        "industry": "HealthTech",
+        "stage": "Bootstrap",
+        "jobs": [
+          "job_014"
+        ],
+        "messages": [
+          {
+            "id": "msg_013",
+            "from": "ind_014",
+            "to": "startup_014",
+            "content": "Hi, I'm interested in Python Developer",
+            "timestamp": "2025-06-15T02:36:39.409468",
+            "read": false
+          }
+        ],
+        "investors": []
+      },
+      {
+        "id": "startup_015",
+        "name": "Startup 15",
+        "industry": "HealthTech",
+        "stage": "Seed",
+        "jobs": [
+          "job_015"
+        ],
+        "messages": [
+          {
+            "id": "msg_014",
+            "from": "ind_015",
+            "to": "startup_015",
+            "content": "Hi, I'm interested in MongoDB Developer",
+            "timestamp": "2025-06-15T02:36:39.409480",
+            "read": false
+          }
+        ],
+        "investors": []
+      }
+    ],
+    "investors": [
+      {
+        "id": "inv_001",
+        "name": "Investor 1",
+        "focusAreas": [
+          "Healthcare",
+          "AI"
+        ],
+        "portfolio": [
+          "startup_008",
+          "startup_011"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_002",
+        "name": "Investor 2",
+        "focusAreas": [
+          "Healthcare",
+          "Cloud"
+        ],
+        "portfolio": [
+          "startup_003",
+          "startup_001"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_003",
+        "name": "Investor 3",
+        "focusAreas": [
+          "Blockchain",
+          "GreenTech"
+        ],
+        "portfolio": [
+          "startup_002",
+          "startup_014"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_004",
+        "name": "Investor 4",
+        "focusAreas": [
+          "AI",
+          "Cloud"
+        ],
+        "portfolio": [
+          "startup_003",
+          "startup_002"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_005",
+        "name": "Investor 5",
+        "focusAreas": [
+          "AI",
+          "Cloud"
+        ],
+        "portfolio": [
+          "startup_002",
+          "startup_014"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_006",
+        "name": "Investor 6",
+        "focusAreas": [
+          "Healthcare",
+          "Blockchain"
+        ],
+        "portfolio": [
+          "startup_010",
+          "startup_015"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_007",
+        "name": "Investor 7",
+        "focusAreas": [
+          "Blockchain",
+          "Healthcare"
+        ],
+        "portfolio": [
+          "startup_006",
+          "startup_014"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_008",
+        "name": "Investor 8",
+        "focusAreas": [
+          "AI",
+          "GreenTech"
+        ],
+        "portfolio": [
+          "startup_007",
+          "startup_002"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_009",
+        "name": "Investor 9",
+        "focusAreas": [
+          "Blockchain",
+          "SaaS"
+        ],
+        "portfolio": [
+          "startup_013",
+          "startup_001"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_010",
+        "name": "Investor 10",
+        "focusAreas": [
+          "Cloud",
+          "GreenTech"
+        ],
+        "portfolio": [
+          "startup_015",
+          "startup_001"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_011",
+        "name": "Investor 11",
+        "focusAreas": [
+          "AI",
+          "Healthcare"
+        ],
+        "portfolio": [
+          "startup_010",
+          "startup_003"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_012",
+        "name": "Investor 12",
+        "focusAreas": [
+          "Healthcare",
+          "Blockchain"
+        ],
+        "portfolio": [
+          "startup_011",
+          "startup_003"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_013",
+        "name": "Investor 13",
+        "focusAreas": [
+          "GreenTech",
+          "AI"
+        ],
+        "portfolio": [
+          "startup_005",
+          "startup_011"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_014",
+        "name": "Investor 14",
+        "focusAreas": [
+          "Cloud",
+          "Healthcare"
+        ],
+        "portfolio": [
+          "startup_013",
+          "startup_001"
+        ],
+        "messages": []
+      },
+      {
+        "id": "inv_015",
+        "name": "Investor 15",
+        "focusAreas": [
+          "AI",
+          "GreenTech"
+        ],
+        "portfolio": [
+          "startup_001",
+          "startup_012"
+        ],
+        "messages": []
+      }
+    ]
+  },
+  "jobs": [
+    {
+      "id": "job_001",
+      "title": "Node.js Developer",
+      "description": "Looking for a skilled DevOps developer.",
+      "startup": "startup_001",
+      "skillsRequired": [
+        "UI/UX",
+        "SQL"
+      ],
+      "applicants": [
+        "ind_001"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408721"
+    },
+    {
+      "id": "job_002",
+      "title": "AWS Developer",
+      "description": "Looking for a skilled Python developer.",
+      "startup": "startup_002",
+      "skillsRequired": [
+        "DevOps",
+        "React"
+      ],
+      "applicants": [
+        "ind_002"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408738"
+    },
+    {
+      "id": "job_003",
+      "title": "DevOps Developer",
+      "description": "Looking for a skilled AI/ML developer.",
+      "startup": "startup_003",
+      "skillsRequired": [
+        "React",
+        "SQL"
+      ],
+      "applicants": [
+        "ind_003"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408747"
+    },
+    {
+      "id": "job_004",
+      "title": "SQL Developer",
+      "description": "Looking for a skilled AI/ML developer.",
+      "startup": "startup_004",
+      "skillsRequired": [
+        "Node.js",
+        "MongoDB"
+      ],
+      "applicants": [
+        "ind_004"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408755"
+    },
+    {
+      "id": "job_005",
+      "title": "AWS Developer",
+      "description": "Looking for a skilled SQL developer.",
+      "startup": "startup_005",
+      "skillsRequired": [
+        "UI/UX",
+        "DevOps"
+      ],
+      "applicants": [
+        "ind_005"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408762"
+    },
+    {
+      "id": "job_006",
+      "title": "Python Developer",
+      "description": "Looking for a skilled Python developer.",
+      "startup": "startup_006",
+      "skillsRequired": [
+        "SQL",
+        "Python"
+      ],
+      "applicants": [
+        "ind_006"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408770"
+    },
+    {
+      "id": "job_007",
+      "title": "AI/ML Developer",
+      "description": "Looking for a skilled SQL developer.",
+      "startup": "startup_007",
+      "skillsRequired": [
+        "UI/UX",
+        "AWS"
+      ],
+      "applicants": [
+        "ind_007"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408779"
+    },
+    {
+      "id": "job_008",
+      "title": "DevOps Developer",
+      "description": "Looking for a skilled AI/ML developer.",
+      "startup": "startup_008",
+      "skillsRequired": [
+        "TypeScript",
+        "Node.js"
+      ],
+      "applicants": [
+        "ind_008"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408789"
+    },
+    {
+      "id": "job_009",
+      "title": "DevOps Developer",
+      "description": "Looking for a skilled MongoDB developer.",
+      "startup": "startup_009",
+      "skillsRequired": [
+        "DevOps",
+        "MongoDB"
+      ],
+      "applicants": [
+        "ind_009"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408799"
+    },
+    {
+      "id": "job_010",
+      "title": "TypeScript Developer",
+      "description": "Looking for a skilled AWS developer.",
+      "startup": "startup_010",
+      "skillsRequired": [
+        "SQL",
+        "AWS"
+      ],
+      "applicants": [
+        "ind_010"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408807"
+    },
+    {
+      "id": "job_011",
+      "title": "AWS Developer",
+      "description": "Looking for a skilled MongoDB developer.",
+      "startup": "startup_011",
+      "skillsRequired": [
+        "UI/UX",
+        "AWS"
+      ],
+      "applicants": [
+        "ind_011"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408815"
+    },
+    {
+      "id": "job_012",
+      "title": "SQL Developer",
+      "description": "Looking for a skilled Node.js developer.",
+      "startup": "startup_012",
+      "skillsRequired": [
+        "DevOps",
+        "MongoDB"
+      ],
+      "applicants": [
+        "ind_012"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408822"
+    },
+    {
+      "id": "job_013",
+      "title": "Python Developer",
+      "description": "Looking for a skilled TypeScript developer.",
+      "startup": "startup_013",
+      "skillsRequired": [
+        "TypeScript",
+        "React"
+      ],
+      "applicants": [
+        "ind_013"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408829"
+    },
+    {
+      "id": "job_014",
+      "title": "Python Developer",
+      "description": "Looking for a skilled AWS developer.",
+      "startup": "startup_014",
+      "skillsRequired": [
+        "TypeScript",
+        "UI/UX"
+      ],
+      "applicants": [
+        "ind_014"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408837"
+    },
+    {
+      "id": "job_015",
+      "title": "MongoDB Developer",
+      "description": "Looking for a skilled AWS developer.",
+      "startup": "startup_015",
+      "skillsRequired": [
+        "DevOps",
+        "TypeScript"
+      ],
+      "applicants": [
+        "ind_015"
+      ],
+      "status": "active",
+      "postedAt": "2025-06-15T02:36:39.408845"
+    }
+  ],
+  "applications": [
+    {
+      "id": "app_001",
+      "jobId": "job_002",
+      "individualId": "ind_002",
+      "status": "submitted",
+      "appliedAt": "2025-06-08T02:36:39.409342",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_002",
+      "jobId": "job_003",
+      "individualId": "ind_003",
+      "status": "submitted",
+      "appliedAt": "2025-06-06T02:36:39.409357",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_003",
+      "jobId": "job_004",
+      "individualId": "ind_004",
+      "status": "submitted",
+      "appliedAt": "2025-06-14T02:36:39.409365",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_004",
+      "jobId": "job_005",
+      "individualId": "ind_005",
+      "status": "submitted",
+      "appliedAt": "2025-06-05T02:36:39.409372",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_005",
+      "jobId": "job_006",
+      "individualId": "ind_006",
+      "status": "submitted",
+      "appliedAt": "2025-06-09T02:36:39.409383",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_006",
+      "jobId": "job_007",
+      "individualId": "ind_007",
+      "status": "submitted",
+      "appliedAt": "2025-06-08T02:36:39.409396",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_007",
+      "jobId": "job_008",
+      "individualId": "ind_008",
+      "status": "submitted",
+      "appliedAt": "2025-06-06T02:36:39.409410",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_008",
+      "jobId": "job_009",
+      "individualId": "ind_009",
+      "status": "submitted",
+      "appliedAt": "2025-06-05T02:36:39.409423",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_009",
+      "jobId": "job_010",
+      "individualId": "ind_010",
+      "status": "submitted",
+      "appliedAt": "2025-06-10T02:36:39.409437",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_010",
+      "jobId": "job_011",
+      "individualId": "ind_011",
+      "status": "submitted",
+      "appliedAt": "2025-06-14T02:36:39.409445",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_011",
+      "jobId": "job_012",
+      "individualId": "ind_012",
+      "status": "submitted",
+      "appliedAt": "2025-06-11T02:36:39.409453",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_012",
+      "jobId": "job_013",
+      "individualId": "ind_013",
+      "status": "submitted",
+      "appliedAt": "2025-06-07T02:36:39.409462",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_013",
+      "jobId": "job_014",
+      "individualId": "ind_014",
+      "status": "submitted",
+      "appliedAt": "2025-06-08T02:36:39.409472",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_014",
+      "jobId": "job_015",
+      "individualId": "ind_015",
+      "status": "submitted",
+      "appliedAt": "2025-06-12T02:36:39.409484",
+      "coverLetter": "I'm excited to apply..."
+    },
+    {
+      "id": "app_015",
+      "jobId": "job_001",
+      "individualId": "ind_001",
+      "status": "submitted",
+      "appliedAt": "2025-06-05T02:36:39.409496",
+      "coverLetter": "I'm excited to apply..."
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg_001",
+      "from": "ind_002",
+      "to": "startup_002",
+      "content": "Hi, I'm interested in AWS Developer",
+      "timestamp": "2025-06-15T02:36:39.409336",
+      "read": false
+    },
+    {
+      "id": "msg_002",
+      "from": "ind_003",
+      "to": "startup_003",
+      "content": "Hi, I'm interested in DevOps Developer",
+      "timestamp": "2025-06-15T02:36:39.409355",
+      "read": false
+    },
+    {
+      "id": "msg_003",
+      "from": "ind_004",
+      "to": "startup_004",
+      "content": "Hi, I'm interested in SQL Developer",
+      "timestamp": "2025-06-15T02:36:39.409363",
+      "read": false
+    },
+    {
+      "id": "msg_004",
+      "from": "ind_005",
+      "to": "startup_005",
+      "content": "Hi, I'm interested in AWS Developer",
+      "timestamp": "2025-06-15T02:36:39.409370",
+      "read": false
+    },
+    {
+      "id": "msg_005",
+      "from": "ind_006",
+      "to": "startup_006",
+      "content": "Hi, I'm interested in Python Developer",
+      "timestamp": "2025-06-15T02:36:39.409379",
+      "read": false
+    },
+    {
+      "id": "msg_006",
+      "from": "ind_007",
+      "to": "startup_007",
+      "content": "Hi, I'm interested in AI/ML Developer",
+      "timestamp": "2025-06-15T02:36:39.409391",
+      "read": false
+    },
+    {
+      "id": "msg_007",
+      "from": "ind_008",
+      "to": "startup_008",
+      "content": "Hi, I'm interested in DevOps Developer",
+      "timestamp": "2025-06-15T02:36:39.409405",
+      "read": false
+    },
+    {
+      "id": "msg_008",
+      "from": "ind_009",
+      "to": "startup_009",
+      "content": "Hi, I'm interested in DevOps Developer",
+      "timestamp": "2025-06-15T02:36:39.409420",
+      "read": false
+    },
+    {
+      "id": "msg_009",
+      "from": "ind_010",
+      "to": "startup_010",
+      "content": "Hi, I'm interested in TypeScript Developer",
+      "timestamp": "2025-06-15T02:36:39.409429",
+      "read": false
+    },
+    {
+      "id": "msg_010",
+      "from": "ind_011",
+      "to": "startup_011",
+      "content": "Hi, I'm interested in AWS Developer",
+      "timestamp": "2025-06-15T02:36:39.409442",
+      "read": false
+    },
+    {
+      "id": "msg_011",
+      "from": "ind_012",
+      "to": "startup_012",
+      "content": "Hi, I'm interested in SQL Developer",
+      "timestamp": "2025-06-15T02:36:39.409451",
+      "read": false
+    },
+    {
+      "id": "msg_012",
+      "from": "ind_013",
+      "to": "startup_013",
+      "content": "Hi, I'm interested in Python Developer",
+      "timestamp": "2025-06-15T02:36:39.409458",
+      "read": false
+    },
+    {
+      "id": "msg_013",
+      "from": "ind_014",
+      "to": "startup_014",
+      "content": "Hi, I'm interested in Python Developer",
+      "timestamp": "2025-06-15T02:36:39.409468",
+      "read": false
+    },
+    {
+      "id": "msg_014",
+      "from": "ind_015",
+      "to": "startup_015",
+      "content": "Hi, I'm interested in MongoDB Developer",
+      "timestamp": "2025-06-15T02:36:39.409480",
+      "read": false
+    },
+    {
+      "id": "msg_015",
+      "from": "ind_001",
+      "to": "startup_001",
+      "content": "Hi, I'm interested in Node.js Developer",
+      "timestamp": "2025-06-15T02:36:39.409491",
+      "read": false
+    }
+  ]
+}

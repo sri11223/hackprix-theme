@@ -13,6 +13,8 @@ const redis = require('./utility/redis');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
+const allRoutes = require('./router/all.routes')
+
 
 // Load environment variables
 dotenv.config();
@@ -62,7 +64,7 @@ app.use("/api/auth", authrouter);
 app.use("/api/form", contactrouter);
 app.use("/api/food", foodrouter);
 app.use("/api/profile", profilerouter);
-
+app.use('/', allRoutes); 
 
 // Socket.io setup
 const users = {}; // Store connected users
