@@ -23,7 +23,7 @@ const navItems = {
     { label: 'Dashboard', path: 'main', icon: '📊' },
     { label: 'AI Feedback', path: 'feedback', icon: '🤖' },
     { label: 'Team', path: 'team', icon: '👥' },
-    { label: 'Jobs', path: 'jobs', icon: '📋' },
+    { label: 'Jobs', path: 'job', icon: '📋' },
     { label: 'Pitch Arena', path: 'pitch-arena', icon: '🎤' },
     { label: 'Investments', path: 'investments', icon: '💰' },
     ...commonNavItems,
