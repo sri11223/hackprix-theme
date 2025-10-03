@@ -9,7 +9,6 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const connectDb = require("./utility/db");
 const errorMiddleware = require("./middleware/error-middleware"); 
-const redis = require('./utility/redis');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');

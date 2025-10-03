@@ -2,7 +2,7 @@
 const { User, Individual, Startup, Investor } = require("../models/usermodel"); // Updated import for discriminators
 const bcrypt = require('bcryptjs'); // Library for hashing passwords
 const jwt = require('jsonwebtoken'); // Library for creating JSON Web Tokens
-const redis = require('../utility/redis').default || require('../utility/redis'); // Support both CommonJS and ESModule
+const redis = require('../utility/redis'); // Import Redis (can be null if not configured)
 const { sendUserRegisteredEvent } = require('../utility/kafka'); // Import Kafka utility
 const { sendWelcomeEmail } = require('../utility/mailer'); // Import mailer utility
 
@@ -91,8 +91,14 @@ const register = async (req, res) => {
       { expiresIn: '7d' } // Changed to 7 days
     );
 
-    // Optionally cache the user profile
-    await redis.set(`cache:/api/auth/profile:${user._id}`, JSON.stringify(user), 'EX', 300);
+    // Optionally cache the user profile (only if Redis is available)
+    if (redis) {
+      try {
+        await redis.set(`cache:/api/auth/profile:${user._id}`, JSON.stringify(user), 'EX', 300);
+      } catch (err) {
+        console.warn('Redis cache operation failed:', err.message);
+      }
+    }
 
     return res.status(201).json({
       msg: "User registered successfully",
@@ -174,8 +180,14 @@ const updateProfile = async (req, res) => {
       { new: true }
     ).select('-password');
 
-    // Invalidate the cache for this user's profile
-    await redis.del(`cache:/api/auth/profile:${userId}`);
+    // Invalidate the cache for this user's profile (only if Redis is available)
+    if (redis) {
+      try {
+        await redis.del(`cache:/api/auth/profile:${userId}`);
+      } catch (err) {
+        console.warn('Redis cache operation failed:', err.message);
+      }
+    }
 
     res.status(200).json(updatedUser);
   } catch (error) {
