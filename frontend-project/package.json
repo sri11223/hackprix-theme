@@ -29,7 +29,7 @@
     "livekit-client": "^2.13.4",
     "lucide-react": "^0.515.0",
     "motion": "^12.18.1",
-    "next": "15.3.3",
+    "next": "^15.5.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.10",

@@ -1,6 +1,11 @@
 import Link from 'next/link'
-import Head from 'next/head'; // Import the Head component
-import { HeroParallax } from './components/Home/Home';
+import ClientHome from './components/Home/ClientHome';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'StartupConnect | Home',
+  description: 'Connecting startups with investors',
+};
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -15,11 +20,6 @@ const navLinks = [
 export default function Home() {
   return (
     <div className="min-h-screen">
-      {/* Add the Head component with your title */}
-      <Head>
-        <title>StartupConnect | Home</title>
-        <meta name="description" content="Connecting startups with investors" />
-      </Head>
       
       {/* Navigation Bar */}
       <nav className="flex gap-8 px-8 py-4 border-b border-gray-200 bg-white">
@@ -33,7 +33,7 @@ export default function Home() {
           </Link>
         ))}
       </nav>
-      <HeroParallax />
+      <ClientHome />
     </div>
   )
 }
