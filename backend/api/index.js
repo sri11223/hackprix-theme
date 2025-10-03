@@ -30,11 +30,37 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "*",
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, Postman, etc.)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'https://hackprix-theme.vercel.app',
+            'https://hackprix-theme-git-main-sri11223.vercel.app',
+            process.env.FRONTEND_URL
+        ].filter(Boolean);
+        
+        // Allow any vercel.app subdomain for this project
+        if (origin.includes('hackprix-theme') && origin.includes('vercel.app')) {
+            return callback(null, true);
+        }
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    optionsSuccessStatus: 200
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Connect to database
 connectDb().then(() => {
