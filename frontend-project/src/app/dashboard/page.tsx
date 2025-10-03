@@ -145,7 +145,7 @@ export default function DashboardQuiz() {
 
     const checkProfile = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/profile", {
+        const res = await fetch("https://hackprix-theme-v6r3.vercel.app/api/profile", {
           headers: { "Authorization": `Bearer ${token}` },
           credentials: 'include',
         });
@@ -197,7 +197,7 @@ export default function DashboardQuiz() {
           throw new Error("Not authenticated. Please login again.");
         }
 
-        const res = await fetch("http://localhost:5000/api/profile/complete", {
+        const res = await fetch("https://hackprix-theme-v6r3.vercel.app/api/profile/complete", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
