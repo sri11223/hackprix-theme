@@ -68,7 +68,7 @@ export default function Register() {
 
     try {
       setLoaderStep(1); // Step 1: Sending data
-      const res = await fetch('http://localhost:5000/api/auth/register', {
+      const res = await fetch('https://hackprix-theme-v6r3.vercel.app/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

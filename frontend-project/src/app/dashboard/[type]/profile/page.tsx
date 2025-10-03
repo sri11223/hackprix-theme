@@ -22,7 +22,7 @@ export default function ProfilePage() {
     const fetchProfile = async () => {
       try {
         const token = Cookies.get('token');
-        const res = await fetch('http://localhost:5000/api/profile', {
+        const res = await fetch('https://hackprix-theme-v6r3.vercel.app/api/profile', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -58,7 +58,7 @@ export default function ProfilePage() {
 
     try {
       const token = Cookies.get('token');
-      const res = await fetch('http://localhost:5000/api/profile/update', {
+      const res = await fetch('https://hackprix-theme-v6r3.vercel.app/api/profile/update', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

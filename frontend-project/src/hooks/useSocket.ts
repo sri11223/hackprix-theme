@@ -1,9 +1,9 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 import Cookies from 'js-cookie';
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+const SOCKET_URL = 'https://hackprix-theme-v6r3.vercel.app';
 
 export const useSocket = () => {
   const socketRef = useRef<Socket | null>(null);

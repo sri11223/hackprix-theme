@@ -44,7 +44,7 @@ export default function Login() {
     const loadingToast = toast.loading('Logging in...');
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch('https://hackprix-theme-v6r3.vercel.app/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
