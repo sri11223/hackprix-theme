@@ -62,11 +62,30 @@ app.use(cors({
 // Handle preflight requests
 app.options('*', cors());
 
-// Connect to database
+// Connect to database and ensure connection before handling requests
+let dbConnected = false;
 connectDb().then(() => {
     console.log('MongoDB Connected');
+    dbConnected = true;
 }).catch(err => {
     console.error('MongoDB connection error:', err);
+});
+
+// Middleware to ensure database is connected
+app.use(async (req, res, next) => {
+    if (!dbConnected) {
+        try {
+            await connectDb();
+            dbConnected = true;
+        } catch (error) {
+            return res.status(503).json({
+                success: false,
+                message: 'Database connection failed',
+                error: error.message
+            });
+        }
+    }
+    next();
 });
 
 // Routes
