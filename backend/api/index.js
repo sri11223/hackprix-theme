@@ -96,7 +96,15 @@ app.use((err, req, res, next) => {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok', message: 'API is running' });
+    res.json({ 
+        status: 'ok', 
+        message: 'API is running',
+        env_check: {
+            jwt_secret: process.env.JWT_SECRET ? 'SET' : 'MISSING',
+            mongodb_uri: process.env.MONGODB_URI ? 'SET' : 'MISSING',
+            node_env: process.env.NODE_ENV || 'not set'
+        }
+    });
 });
 
 module.exports = app;
