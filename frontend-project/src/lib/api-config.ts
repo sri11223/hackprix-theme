@@ -1,8 +1,8 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000',
-  API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api',
-  SOCKET_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000',
+  BASE_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'https://hackprix-theme-v6r3.vercel.app',
+  API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://hackprix-theme-v6r3.vercel.app/api',
+  SOCKET_URL: process.env.NEXT_PUBLIC_BACKEND_URL || 'https://hackprix-theme-v6r3.vercel.app',
 };
 
 // API Endpoints

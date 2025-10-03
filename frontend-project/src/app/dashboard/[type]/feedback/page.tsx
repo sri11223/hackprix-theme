@@ -5,19 +5,37 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 const GEMINI_API_KEY = 'AIzaSyCBSdffvU2-Kbx-Pj-nSlC6pHEgS_bnH30';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 async function callGemini(prompt: string): Promise<string> {
-  const res = await fetch(GEMINI_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.7, topK: 1, topP: 1, maxOutputTokens: 1024 }
-    }),
-  });
-  const json = await res.json();
-  return json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  try {
+    const res = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, topK: 1, topP: 1, maxOutputTokens: 1024 }
+      }),
+    });
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Gemini API Error:', errorText);
+      throw new Error(`Gemini API failed: ${res.status} ${res.statusText}`);
+    }
+    
+    const json = await res.json();
+    
+    if (json.error) {
+      console.error('Gemini API Error Response:', json.error);
+      throw new Error(`Gemini API Error: ${json.error.message}`);
+    }
+    
+    return json?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
+  } catch (error) {
+    console.error('Error calling Gemini API:', error);
+    throw error;
+  }
 }
 
 export default function AnalyzerPage() {
