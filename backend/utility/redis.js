@@ -34,8 +34,12 @@ if (isRedisConfigured) {
             console.log('🚀 Redis connected successfully!');
         });
 
+        let redisErrorLogged = false;
         redis.on('error', (err) => {
-            console.error('❌ Redis error:', err.message);
+            if (!redisErrorLogged) {
+                console.warn('Redis not available - running without cache');
+                redisErrorLogged = true;
+            }
             redis = null; // Disable Redis on error
         });
     } catch (error) {

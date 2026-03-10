@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   FiUsers, FiPieChart, FiActivity, FiAward, FiClock, FiCheckCircle, 
   FiGitBranch, FiTrendingUp, FiBarChart2, FiCalendar, FiMail, FiMapPin,
@@ -8,6 +8,8 @@ import {
 import { motion } from 'framer-motion';
 import { Bar, Pie } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
+import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 Chart.register(...registerables);
 
 interface TeamMember {

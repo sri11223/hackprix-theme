@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 interface Profile {
   firstName: string;
@@ -22,7 +23,7 @@ export default function ProfilePage() {
     const fetchProfile = async () => {
       try {
         const token = Cookies.get('token');
-        const res = await fetch('https://hackprix-theme-v6r3.vercel.app/api/profile', {
+        const res = await fetch(API_ENDPOINTS.PROFILE.GET, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -58,7 +59,7 @@ export default function ProfilePage() {
 
     try {
       const token = Cookies.get('token');
-      const res = await fetch('https://hackprix-theme-v6r3.vercel.app/api/profile/update', {
+      const res = await fetch(API_ENDPOINTS.PROFILE.UPDATE, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

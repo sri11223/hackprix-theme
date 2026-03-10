@@ -8,94 +8,179 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const connectDb = require("./utility/db");
-const errorMiddleware = require("./middleware/error-middleware"); 
-const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./swagger.yaml');
-const allRoutes = require('./router/all.routes')
-
+const errorMiddleware = require("./middleware/error-middleware");
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
 const server = createServer(app);
+
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+
 const io = new Server(server, {
-    cors: { origin: process.env.FRONTEND_URL || "http://localhost:3000" }
+    cors: {
+        origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"],
+        methods: ["GET", "POST"],
+        credentials: true,
+    }
 });
+
+// Connected users map: { [userId]: { socketId, userType } }
+const connectedUsers = {};
+
+// Make io and connectedUsers available to controllers
+app.set('io', io);
+app.set('connectedUsers', connectedUsers);
 
 // Security middleware
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per windowMs
+    windowMs: 15 * 60 * 1000,
+    max: 200,
     message: { msg: "Too many requests, please try again later" }
 });
 
 // Middleware
 app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            connectSrc: ["'self'", process.env.FRONTEND_URL]
-        }
-    }
+    contentSecurityPolicy: false,
 }));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: function (origin, callback) {
+        const allowed = [
+            'http://localhost:3000',
+            'http://localhost:3001',
+            'http://localhost:3002',
+        ];
+        if (!origin || allowed.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use('/api/auth', limiter); // Apply rate limiting to auth routes
+app.use('/api/auth', limiter);
 
 // Routes
 const authrouter = require("./router/auth-router");
-const contactrouter = require("./router/contact-router");
-const foodrouter = require("./router/food-router"); // Pass io
 const profilerouter = require("./router/profile-router");
+const startupRouter = require("./router/startup-router");
+const jobRouter = require("./router/job-router");
+const messageRouter = require("./router/message-router");
+const investmentRouter = require("./router/investment-router");
+const pitchRouter = require("./router/pitch-router");
+const dashboardRouter = require("./router/dashboard-router");
+const connectionRouter = require("./router/connection-router");
 
 app.use("/api/auth", authrouter);
-app.use("/api/form", contactrouter);
-app.use("/api/food", foodrouter);
 app.use("/api/profile", profilerouter);
-app.use('/', allRoutes); 
+app.use("/api/startups", startupRouter);
+app.use("/api/jobs", jobRouter);
+app.use("/api/messages", messageRouter);
+app.use("/api/investments", investmentRouter);
+app.use("/api/pitch-sessions", pitchRouter);
+app.use("/api/dashboard", dashboardRouter);
+app.use("/api/connections", connectionRouter);
 
-// Socket.io setup
-const users = {}; // Store connected users
-const ngorouter = require("./router/ngo-router")(io,users);
-app.use("/api/ngo", ngorouter);
+// Health check
+app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", connectedUsers: Object.keys(connectedUsers).length });
+});
+
+// ==================== Socket.io ====================
 io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
+    console.log("Socket connected:", socket.id);
 
-    // Register user (NGO or Institute)
+    // Register user with their userId
     socket.on("register", ({ userId, userType }) => {
-        users[userId] = { socketId: socket.id, userType };
-        console.log("User registered:", users);
+        if (!userId) return;
+        connectedUsers[userId] = { socketId: socket.id, userType };
+        console.log(`User registered: ${userId} (${userType})`);
+
+        // Broadcast online status to connections
+        socket.broadcast.emit("userOnline", { userId });
+    });
+
+    // Real-time messaging
+    socket.on("sendMessage", async ({ receiverId, content }) => {
+        const senderEntry = Object.entries(connectedUsers).find(([, v]) => v.socketId === socket.id);
+        if (!senderEntry) return;
+
+        const [senderId] = senderEntry;
+        const receiverSocket = connectedUsers[receiverId];
+        if (receiverSocket) {
+            io.to(receiverSocket.socketId).emit("newMessage", {
+                sender: { id: senderId },
+                content,
+                timestamp: new Date(),
+            });
+        }
+    });
+
+    // Typing indicators
+    socket.on("typing", ({ receiverId }) => {
+        const senderEntry = Object.entries(connectedUsers).find(([, v]) => v.socketId === socket.id);
+        if (!senderEntry) return;
+        const [senderId] = senderEntry;
+        const receiverSocket = connectedUsers[receiverId];
+        if (receiverSocket) {
+            io.to(receiverSocket.socketId).emit("userTyping", { userId: senderId });
+        }
+    });
+
+    socket.on("stopTyping", ({ receiverId }) => {
+        const senderEntry = Object.entries(connectedUsers).find(([, v]) => v.socketId === socket.id);
+        if (!senderEntry) return;
+        const [senderId] = senderEntry;
+        const receiverSocket = connectedUsers[receiverId];
+        if (receiverSocket) {
+            io.to(receiverSocket.socketId).emit("userStoppedTyping", { userId: senderId });
+        }
+    });
+
+    // Pitch arena - join room
+    socket.on("joinPitchRoom", ({ sessionId, userId }) => {
+        socket.join(`pitch_${sessionId}`);
+        socket.to(`pitch_${sessionId}`).emit("participantJoined", { userId });
+    });
+
+    socket.on("leavePitchRoom", ({ sessionId, userId }) => {
+        socket.leave(`pitch_${sessionId}`);
+        socket.to(`pitch_${sessionId}`).emit("participantLeft", { userId });
+    });
+
+    // Pitch arena - chat within room
+    socket.on("pitchChat", ({ sessionId, message }) => {
+        socket.to(`pitch_${sessionId}`).emit("pitchChatMessage", message);
+    });
+
+    // Pitch arena - reactions
+    socket.on("pitchReaction", ({ sessionId, reaction }) => {
+        io.to(`pitch_${sessionId}`).emit("pitchReactionReceived", reaction);
     });
 
     // Handle disconnections
     socket.on("disconnect", () => {
-        console.log("A user disconnected:", socket.id);
-        Object.keys(users).forEach((key) => {
-            if (users[key].socketId === socket.id) {
-                delete users[key]; // Remove user on disconnect
-            }
-        });
+        const entry = Object.entries(connectedUsers).find(([, v]) => v.socketId === socket.id);
+        if (entry) {
+            const [userId] = entry;
+            delete connectedUsers[userId];
+            socket.broadcast.emit("userOffline", { userId });
+            console.log(`User disconnected: ${userId}`);
+        }
     });
 });
 
-// Swagger documentation
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// Error handling middleware should be after all routes
+// Error handling middleware
 app.use(errorMiddleware);
 
-// Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
@@ -113,10 +198,15 @@ process.on('SIGTERM', () => {
     });
 });
 
-// Add after your MongoDB connection
+// Start server
 connectDb().then(() => {
     console.log('MongoDB Connected');
-    server.listen(process.env.PORT || 5000, () => {
-        console.log(`Server running on port ${process.env.PORT || 5000}`);
+    const PORT = process.env.PORT || 5000;
+    server.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log(`Frontend URL: ${FRONTEND_URL}`);
     });
+}).catch(err => {
+    console.error('Failed to connect to MongoDB:', err);
+    process.exit(1);
 });

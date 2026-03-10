@@ -1,11 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   FiUsers, FiEye, FiDollarSign, FiMail, FiTrendingUp,
   FiAward, FiCheck, FiX, FiClock, FiStar, FiBarChart2, FiUser
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 type Investor = {
   id: string;
@@ -19,46 +21,28 @@ type Investor = {
 };
 
 export default function StartupInvestmentDashboard() {
-  // Mock data
-  const [investors, setInvestors] = useState<Investor[]>([
-    {
-      id: '1',
-      name: 'Alex Chen',
-      firm: 'Sequoia Capital',
-      status: 'interested',
-      lastInteraction: '2 hours ago',
-      judgeScore: 85,
-    },
-    {
-      id: '2',
-      name: 'Maria Garcia',
-      firm: 'Andreessen Horowitz',
-      status: 'proposed',
-      proposalAmount: 500000,
-      equityAsk: 10,
-      lastInteraction: '1 day ago',
-      judgeScore: 92,
-    },
-    {
-      id: '3',
-      name: 'Jamal Williams',
-      firm: 'Y Combinator',
-      status: 'viewed',
-      lastInteraction: '3 days ago',
-      judgeScore: 78,
-    },
-    {
-      id: '4',
-      name: 'Taylor Smith',
-      firm: '500 Startups',
-      status: 'connected',
-      lastInteraction: '1 week ago',
-      judgeScore: 88,
-    },
-  ]);
-
+  const [investors, setInvestors] = useState<Investor[]>([]);
   const [activeTab, setActiveTab] = useState('all');
   const [selectedInvestor, setSelectedInvestor] = useState<Investor | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchInvestments = async () => {
+      try {
+        const token = Cookies.get('token');
+        const res = await fetch(API_ENDPOINTS.INVESTMENTS.LIST, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setInvestors(data.investments || []);
+      } catch (error) {
+        console.error('Error fetching investments:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInvestments();
+  }, []);
 
   // Filter investors based on tab
   const filteredInvestors = investors.filter((investor) => {

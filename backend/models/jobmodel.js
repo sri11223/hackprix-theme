@@ -29,23 +29,28 @@ const jobSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  fullDescription: { type: String },
+  requirements: [String],
+  benefits: [String],
   postedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
   },
   applications: [{
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    name: String,
+    email: String,
+    phone: String,
+    coverLetter: String,
+    portfolioUrl: String,
+    linkedInUrl: String,
     status: {
       type: String,
-      enum: ['PENDING', 'REVIEWING', 'ACCEPTED', 'REJECTED'],
+      enum: ['PENDING', 'REVIEWING', 'INTERVIEW', 'ACCEPTED', 'REJECTED'],
       default: 'PENDING',
     },
     appliedAt: {
@@ -53,6 +58,9 @@ const jobSchema = new mongoose.Schema({
       default: Date.now,
     },
   }],
-});
+}, { timestamps: true });
+
+jobSchema.index({ postedBy: 1 });
+jobSchema.index({ skills: 1 });
 
 module.exports = mongoose.model('Job', jobSchema);

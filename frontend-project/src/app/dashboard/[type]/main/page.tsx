@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FiTrendingUp, FiDollarSign, FiUsers, FiBriefcase, FiClock, 
@@ -1243,12 +1244,19 @@ export default function DashboardPage() {
     const type = Cookies.get('userType');
     setUserType(type);
     
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-    
-    return () => clearTimeout(timer);
+    const fetchStats = async () => {
+      try {
+        const token = Cookies.get('token');
+        await fetch(API_ENDPOINTS.DASHBOARD.STATS, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchStats();
   }, []);
 
   if (isLoading) {

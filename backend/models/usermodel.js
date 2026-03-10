@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
   location: {
     city: String,
     state: String,
-    country: { type: String, default: 'India' }
+    country: String
   },
   followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],

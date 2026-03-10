@@ -12,6 +12,8 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 // Register ChartJS components
 ChartJS.register(
@@ -48,80 +50,27 @@ export default function AnalyticsDashboard() {
   const [loading, setLoading] = useState(true);
   const [timeframe, setTimeframe] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
-  // Fetch trade history (mock data - replace with real API call)
+  // Fetch analytics data from API
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      
-      // Mock trades data - replace with actual API call to your backend
-      const mockTrades: Trade[] = [
-        {
-          id: '1',
-          symbol: 'AAPL',
-          date: '2023-10-01',
-          type: 'BUY',
-          quantity: 10,
-          price: 170.25,
-          currentValue: 175.50,
-          pnl: 52.50
-        },
-        {
-          id: '2',
-          symbol: 'MSFT',
-          date: '2023-10-05',
-          type: 'BUY',
-          quantity: 5,
-          price: 325.40,
-          currentValue: 330.20,
-          pnl: 24.00
-        },
-        {
-          id: '3',
-          symbol: 'TSLA',
-          date: '2023-09-15',
-          type: 'SELL',
-          quantity: 3,
-          price: 265.75,
-          currentValue: 260.30,
-          pnl: -16.35
-        }
-      ];
-
-      // Mock portfolio history - replace with actual API call
-      const mockPortfolioHistory = generateMockPortfolioData(timeframe);
-      
-      setTrades(mockTrades);
-      setPortfolioHistory(mockPortfolioHistory);
-      setLoading(false);
+      try {
+        const token = Cookies.get('token');
+        const res = await fetch(`${API_ENDPOINTS.INVESTMENTS.PORTFOLIO}?timeframe=${timeframe}`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setTrades(data.trades || []);
+        setPortfolioHistory(data.portfolioHistory || []);
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
   }, [timeframe]);
-
-  // Generate mock portfolio data based on timeframe
-  const generateMockPortfolioData = (range: string): PortfolioMetric[] => {
-    const days = range === '7d' ? 7 : range === '30d' ? 30 : range === '90d' ? 90 : 365;
-    const startValue = 10000;
-    const data: PortfolioMetric[] = [];
-    
-    for (let i = days; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      
-      // Simulate market fluctuations
-      const fluctuation = (Math.random() * 2 - 1) * (range === '1y' ? 1.5 : 0.8);
-      const value = i === days ? startValue : 
-        data[data.length - 1].value * (1 + fluctuation / 100);
-      
-      data.push({
-        date: date.toISOString().split('T')[0],
-        value: parseFloat(value.toFixed(2)),
-        return: parseFloat(((value / startValue - 1) * 100).toFixed(2))
-      });
-    }
-    
-    return data;
-  };
 
   // Calculate summary metrics
   const totalInvested = trades.reduce((sum, trade) => sum + (trade.price * trade.quantity), 0);

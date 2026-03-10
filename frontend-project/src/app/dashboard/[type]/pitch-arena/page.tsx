@@ -3,10 +3,13 @@ import { useState, useEffect, useRef } from 'react';
 import { 
   FiVideo, FiUpload, FiMic, FiMicOff, FiVideoOff, 
   FiMessageSquare, FiUsers, FiBarChart2, FiCalendar,
-  FiMail, FiShare2, FiClock, FiUserPlus, FiFileText
+  FiMail, FiShare2, FiClock, FiUserPlus, FiFileText, FiDownload
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
+import { socket } from '@/hooks/useSocket';
 
 type Participant = {
   id: string;
@@ -34,53 +37,23 @@ const PitchArena = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'speaker'>('grid');
   const [peers, setPeers] = useState<Participant[]>([
     { id: 'me', name: 'You (Presenter)', role: 'presenter', status: 'joined' },
-    { id: 'peer1', name: 'Alex Chen', role: 'investor', email: 'alex@vc.com', status: 'joined' },
-    { id: 'peer2', name: 'Maria Garcia', role: 'investor', email: 'maria@angel.com', status: 'joined' },
-    { id: 'peer3', name: 'Jamal Williams', role: 'mentor', email: 'jamal@accelerator.com', status: 'invited' },
-    { id: 'peer4', name: 'Taylor Smith', role: 'attendee', email: 'taylor@startup.io', status: 'declined' }
   ]);
   
   // Pitch events/scheduling
-  const [events, setEvents] = useState<PitchEvent[]>([
-    {
-      id: '1',
-      title: 'Seed Round Pitch',
-      description: 'Presentation for our seed funding round',
-      date: '2023-11-15',
-      time: '14:00',
-      duration: 60,
-      participants: ['me', 'peer1', 'peer2']
-    },
-    {
-      id: '2',
-      title: 'Product Demo',
-      description: 'Showcase new features to advisory board',
-      date: '2023-11-20',
-      time: '10:30',
-      duration: 45,
-      participants: ['me', 'peer3']
-    }
-  ]);
+  const [events, setEvents] = useState<PitchEvent[]>([]);
   
   // Room features
   const [poll, setPoll] = useState({
     question: 'How likely would you invest in this startup?',
     options: ['Very Likely', 'Likely', 'Neutral', 'Unlikely'],
-    votes: [12, 8, 5, 2],
+    votes: [0, 0, 0, 0],
     voted: false
   });
   
-  const [reactions, setReactions] = useState({ '👍': 15, '🎉': 8, '🔥': 12, '💡': 3 });
-  const [files, setFiles] = useState<Array<{name: string, url: string, size: string, type: string}>>([
-    { name: 'PitchDeck.pdf', url: '#', size: '2.4MB', type: 'presentation' },
-    { name: 'Financials.xlsx', url: '#', size: '1.1MB', type: 'spreadsheet' }
-  ]);
+  const [reactions, setReactions] = useState<Record<string, number>>({ '👍': 0, '🎉': 0, '🔥': 0, '💡': 0 });
+  const [files, setFiles] = useState<Array<{name: string, url: string, size: string, type: string}>>([]);
   
-  const [chatMessages, setChatMessages] = useState([
-    { sender: 'Alex Chen', text: 'Great presentation so far!', time: '2:45 PM' },
-    { sender: 'You', text: 'Thanks Alex! Slide deck is available in files.', time: '2:46 PM' },
-    { sender: 'Maria Garcia', text: 'Could you share the revenue projections?', time: '2:47 PM' }
-  ]);
+  const [chatMessages, setChatMessages] = useState<Array<{sender: string, text: string, time: string}>>([]);
   
   const [messageInput, setMessageInput] = useState('');
   const [raisedHands, setRaisedHands] = useState<string[]>([]);
@@ -113,6 +86,31 @@ const PitchArena = () => {
 
   // Effects
   useEffect(() => {
+    // Fetch pitch sessions from API
+    const fetchPitchSessions = async () => {
+      try {
+        const token = Cookies.get('token');
+        const res = await fetch(API_ENDPOINTS.PITCH.LIST, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        if (data.sessions) {
+          setEvents(data.sessions.map((s: { _id: string; title: string; description: string; scheduledDate: string; duration: number; invitees: string[] }) => ({
+            id: s._id,
+            title: s.title,
+            description: s.description,
+            date: new Date(s.scheduledDate).toISOString().split('T')[0],
+            time: new Date(s.scheduledDate).toTimeString().slice(0, 5),
+            duration: s.duration,
+            participants: s.invitees || [],
+          })));
+        }
+      } catch (error) {
+        console.error('Error fetching pitch sessions:', error);
+      }
+    };
+    fetchPitchSessions();
+
     // Mock video streams
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then(stream => {
@@ -121,11 +119,18 @@ const PitchArena = () => {
       })
       .catch(() => console.log('Camera access denied'));
 
-    // Auto-scroll chat
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Socket listeners for pitch room
+    socket.on('pitchChat', (msg: { sender: string; text: string; time: string }) => {
+      setChatMessages(prev => [...prev, msg]);
+    });
+    socket.on('pitchReaction', (data: { emoji: string }) => {
+      setReactions(r => ({ ...r, [data.emoji]: (r[data.emoji] || 0) + 1 }));
+    });
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      socket.off('pitchChat');
+      socket.off('pitchReaction');
     };
   }, []);
 
@@ -150,7 +155,10 @@ const PitchArena = () => {
   };
 
   const handleReaction = (emoji: string) => {
-    setReactions(r => ({ ...r, [emoji]: r[emoji] + 1 }));
+    setReactions(r => ({ ...r, [emoji]: (r[emoji] || 0) + 1 }));
+    if (activeEvent) {
+      socket.emit('pitchReaction', { roomId: activeEvent, emoji });
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -166,15 +174,14 @@ const PitchArena = () => {
   };
 
   const sendMessage = () => {
-    if (messageInput.trim()) {
-      setChatMessages([
-        ...chatMessages,
-        { 
-          sender: 'You', 
-          text: messageInput, 
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
-        }
-      ]);
+    if (messageInput.trim() && activeEvent) {
+      const msg = { 
+        sender: 'You', 
+        text: messageInput, 
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+      };
+      setChatMessages(prev => [...prev, msg]);
+      socket.emit('pitchChat', { roomId: activeEvent, ...msg });
       setMessageInput('');
     }
   };
@@ -197,21 +204,37 @@ const PitchArena = () => {
     }));
   };
 
-  const createEvent = () => {
-    const event: PitchEvent = {
-      id: Date.now().toString(),
-      ...newEvent,
-      participants: [...newEvent.participants, 'me']
-    };
-    setEvents([...events, event]);
-    setNewEvent({
-      title: '',
-      description: '',
-      date: '',
-      time: '',
-      duration: 30,
-      participants: []
-    });
+  const createEvent = async () => {
+    try {
+      const token = Cookies.get('token');
+      const res = await fetch(API_ENDPOINTS.PITCH.CREATE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify({
+          title: newEvent.title,
+          description: newEvent.description,
+          scheduledDate: `${newEvent.date}T${newEvent.time}`,
+          duration: newEvent.duration,
+          invitees: newEvent.participants,
+        }),
+      });
+      const data = await res.json();
+      if (data.session) {
+        const event: PitchEvent = {
+          id: data.session._id,
+          title: data.session.title,
+          description: data.session.description,
+          date: newEvent.date,
+          time: newEvent.time,
+          duration: newEvent.duration,
+          participants: [...newEvent.participants, 'me']
+        };
+        setEvents([...events, event]);
+      }
+      setNewEvent({ title: '', description: '', date: '', time: '', duration: 30, participants: [] });
+    } catch (error) {
+      console.error('Error creating pitch session:', error);
+    }
   };
 
   const sendInvite = () => {
@@ -239,6 +262,7 @@ const PitchArena = () => {
     setActiveTab('live');
     setTimerActive(true);
     setPitchTimer(0);
+    socket.emit('joinPitchRoom', { roomId: eventId });
     
     // Auto-join participants
     const event = events.find(e => e.id === eventId);

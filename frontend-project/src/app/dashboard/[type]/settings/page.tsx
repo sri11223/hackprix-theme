@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -133,7 +134,23 @@ export default function SettingsPage() {
       </section>
 
       <div className="flex justify-end">
-        <button className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Save Changes</button>
+        <button
+          className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+          onClick={async () => {
+            try {
+              const token = Cookies.get('token');
+              await fetch(API_ENDPOINTS.PROFILE.UPDATE, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+                body: JSON.stringify({ settings }),
+              });
+            } catch (error) {
+              console.error('Error saving settings:', error);
+            }
+          }}
+        >
+          Save Changes
+        </button>
       </div>
     </div>
   );

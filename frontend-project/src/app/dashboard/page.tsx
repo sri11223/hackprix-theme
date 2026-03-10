@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiArrowRight, FiCheck, FiUser, FiBriefcase, FiDollarSign } from "react-icons/fi";
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 interface Question {
   name: string;
@@ -145,7 +146,7 @@ export default function DashboardQuiz() {
 
     const checkProfile = async () => {
       try {
-        const res = await fetch("https://hackprix-theme-v6r3.vercel.app/api/profile", {
+        const res = await fetch(API_ENDPOINTS.PROFILE.GET, {
           headers: { "Authorization": `Bearer ${token}` },
           credentials: 'include',
         });
@@ -197,7 +198,7 @@ export default function DashboardQuiz() {
           throw new Error("Not authenticated. Please login again.");
         }
 
-        const res = await fetch("https://hackprix-theme-v6r3.vercel.app/api/profile/complete", {
+        const res = await fetch(API_ENDPOINTS.PROFILE.COMPLETE, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

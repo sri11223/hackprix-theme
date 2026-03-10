@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
 import Image from 'next/image';
 import styled from 'styled-components';
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 // MultiStepLoader component inlined here
 function MultiStepLoader({ steps, activeStep, visible }: { steps: string[]; activeStep: number; visible: boolean }) {
@@ -68,11 +69,12 @@ export default function Register() {
 
     try {
       setLoaderStep(1); // Step 1: Sending data
-      const res = await fetch('https://hackprix-theme-v6r3.vercel.app/api/auth/register', {
+      const res = await fetch(API_ENDPOINTS.AUTH.REGISTER, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 

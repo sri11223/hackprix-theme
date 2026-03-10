@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 import toast, { Toaster } from 'react-hot-toast';
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 export default function Login() {
   const router = useRouter();
@@ -44,11 +45,12 @@ export default function Login() {
     const loadingToast = toast.loading('Logging in...');
 
     try {
-      const res = await fetch('https://hackprix-theme-v6r3.vercel.app/api/auth/login', {
+      const res = await fetch(API_ENDPOINTS.AUTH.LOGIN, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 
@@ -77,11 +79,14 @@ export default function Login() {
       // Redirect based on user type
       setTimeout(() => {
         switch (data.userType) {
-          case 'Startup':
-            router.push('/dashboard/startup');
+          case 'STARTUP':
+            router.push('/dashboard/startup/main');
             break;
-          case 'Investor':
-            router.push('/dashboard/investor');
+          case 'INVESTOR':
+            router.push('/dashboard/investor/main');
+            break;
+          case 'INDIVIDUAL':
+            router.push('/dashboard/individual/main');
             break;
           default:
             router.push('/dashboard');

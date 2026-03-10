@@ -7,6 +7,8 @@ import {
   FiBookmark, FiShare2, FiDollarSign, FiMapPin, FiClock
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
+import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 interface Student {
   id: string;
@@ -63,137 +65,28 @@ const TalentHub = () => {
     salary: ''
   });
   const [message, setMessage] = useState('');
+  const [students, setStudents] = useState<Student[]>([]);
+  const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
 
-  // Sample data
-  const students: Student[] = [
-    {
-      id: '1',
-      name: 'Alex Johnson',
-      avatar: '/avatars/student1.jpg',
-      university: 'Stanford University',
-      major: 'Computer Science',
-      skills: ['React', 'Node.js', 'Python', 'Machine Learning'],
-      experience: '2 years',
-      location: 'San Francisco, CA',
-      availability: 'Immediate',
-      rating: 4.8,
-      projects: [
-        {
-          title: 'AI Chatbot for Education',
-          description: 'Developed a chatbot using NLP to assist students with coursework'
-        },
-        {
-          title: 'E-commerce Platform',
-          description: 'Full-stack development of a sustainable fashion marketplace'
-        }
-      ],
-      bio: 'Passionate full-stack developer with focus on AI applications. Looking for impactful internship opportunities.',
-      contact: 'alex.j@stanford.edu'
-    },
-    {
-      id: '2',
-      name: 'Maria Garcia',
-      avatar: '/avatars/student2.jpg',
-      university: 'MIT',
-      major: 'Data Science',
-      skills: ['Python', 'SQL', 'TensorFlow', 'Data Visualization'],
-      experience: '1.5 years',
-      location: 'Boston, MA',
-      availability: 'Summer 2023',
-      rating: 4.6,
-      projects: [
-        {
-          title: 'Predictive Analytics for Healthcare',
-          description: 'Developed models to predict patient readmission rates'
-        }
-      ],
-      bio: 'Data science enthusiast with healthcare domain expertise. Strong statistical modeling background.',
-      contact: 'mgarcia@mit.edu'
-    },
-    {
-      id: '3',
-      name: 'Jamal Williams',
-      avatar: '/avatars/student3.jpg',
-      university: 'Howard University',
-      major: 'UX Design',
-      skills: ['Figma', 'User Research', 'Prototyping', 'UI/UX'],
-      experience: '3 years',
-      location: 'Remote',
-      availability: 'Part-time',
-      rating: 4.9,
-      projects: [
-        {
-          title: 'Accessibility Redesign',
-          description: 'Improved accessibility for a major news platform'
-        },
-        {
-          title: 'Mobile Banking App',
-          description: 'Designed intuitive financial management app'
-        }
-      ],
-      bio: 'User-centered designer focused on inclusive design principles. Available for freelance or part-time roles.',
-      contact: 'jamalw@howard.edu'
-    },
-    {
-      id: '4',
-      name: 'Priya Patel',
-      avatar: '/avatars/student4.jpg',
-      university: 'University of Texas',
-      major: 'Business Analytics',
-      skills: ['Excel', 'Tableau', 'SQL', 'Market Research'],
-      experience: '1 year',
-      location: 'Austin, TX',
-      availability: 'Immediate',
-      rating: 4.5,
-      projects: [
-        {
-          title: 'Startup Market Analysis',
-          description: 'Conducted competitive analysis for edtech startup'
-        }
-      ],
-      bio: 'Analytical thinker with strong business acumen. Seeking internship to apply data skills in real-world settings.',
-      contact: 'priya.p@utexas.edu'
-    }
-  ];
-
-  const jobPostings: JobPosting[] = [
-    {
-      id: '1',
-      title: 'Frontend Developer Intern',
-      description: 'Join our team to build beautiful user interfaces for our SaaS platform. Work with React and TypeScript.',
-      skillsRequired: ['React', 'TypeScript', 'CSS'],
-      location: 'Remote',
-      type: 'internship',
-      salary: '$25/hr',
-      postedDate: '2023-08-01',
-      applications: 12,
-      status: 'open'
-    },
-    {
-      id: '2',
-      title: 'Data Science Part-time',
-      description: 'Help analyze user behavior data to improve our recommendation algorithms.',
-      skillsRequired: ['Python', 'Pandas', 'SQL'],
-      location: 'San Francisco, CA',
-      type: 'part-time',
-      salary: '$30/hr',
-      postedDate: '2023-07-25',
-      applications: 8,
-      status: 'open'
-    },
-    {
-      id: '3',
-      title: 'UX Design Contractor',
-      description: 'Redesign our mobile app interface to improve user engagement.',
-      skillsRequired: ['Figma', 'User Research', 'UI/UX'],
-      location: 'Remote',
-      type: 'contract',
-      salary: '$45/hr',
-      postedDate: '2023-08-10',
-      applications: 5,
-      status: 'open'
-    }
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = Cookies.get('token');
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        const [jobsRes, postedRes] = await Promise.all([
+          fetch(API_ENDPOINTS.JOBS.LIST, { headers }),
+          fetch(API_ENDPOINTS.JOBS.MY_POSTED, { headers }),
+        ]);
+        const jobsData = await jobsRes.json();
+        const postedData = await postedRes.json();
+        if (jobsData.jobs) setStudents([]); // Students come from connections/users search
+        if (postedData.jobs) setJobPostings(postedData.jobs);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   // Filtered data
   const filteredStudents = students.filter(student => {
@@ -253,37 +146,31 @@ const TalentHub = () => {
     setFilters({...filters, skills: filters.skills.filter(s => s !== skill)});
   };
 
-  const handlePostJob = () => {
+  const handlePostJob = async () => {
     if (!newJob.title || !newJob.description || newJob.skillsRequired.length === 0) {
       toast.error('Please fill all required fields');
       return;
     }
 
-    const job: JobPosting = {
-      id: `job-${Date.now()}`,
-      title: newJob.title,
-      description: newJob.description,
-      skillsRequired: newJob.skillsRequired,
-      location: newJob.location,
-      type: newJob.type,
-      salary: newJob.salary,
-      postedDate: new Date().toISOString(),
-      applications: 0,
-      status: 'open'
-    };
-
-    jobPostings.unshift(job);
-    setShowJobForm(false);
-    setNewJob({
-      title: '',
-      description: '',
-      skillsRequired: [],
-      location: '',
-      type: 'internship',
-      salary: ''
-    });
-    toast.success('Job posted successfully!');
-    setActiveTab('jobs');
+    try {
+      const token = Cookies.get('token');
+      const res = await fetch(API_ENDPOINTS.JOBS.CREATE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify(newJob),
+      });
+      const data = await res.json();
+      if (data.job) {
+        setJobPostings(prev => [data.job, ...prev]);
+      }
+      setShowJobForm(false);
+      setNewJob({ title: '', description: '', skillsRequired: [], location: '', type: 'internship', salary: '' });
+      toast.success('Job posted successfully!');
+      setActiveTab('jobs');
+    } catch (error) {
+      console.error('Error posting job:', error);
+      toast.error('Failed to post job');
+    }
   };
 
   const handleSendMessage = () => {

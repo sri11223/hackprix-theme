@@ -1,6 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, SendHorizonal } from 'lucide-react';
+import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
+import { socket } from '@/hooks/useSocket';
 
 interface Message {
   id: string;
@@ -30,91 +33,102 @@ interface Chat {
 }
 
 export default function MessagesPage() {
-  const [chats, setChats] = useState<Chat[]>([
-    {
-      id: '1',
-      user: {
-        id: '1',
-        name: 'John from TechStart',
-        status: 'online'
-      },
-      lastMessage: {
-        content: 'Thanks for your application! When are you available for an interview?',
-        timestamp: new Date()
-      },
-      unreadCount: 2
-    },
-    {
-      id: '2',
-      user: {
-        id: '2',
-        name: 'Sarah from CloudSecure',
-        status: 'offline'
-      },
-      lastMessage: {
-        content: 'Would you be interested in a technical co-founder role?',
-        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000)
-      },
-      unreadCount: 0
-    }
-  ]);
-
+  const [chats, setChats] = useState<Chat[]>([]);
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [search, setSearch] = useState('');
+  const [typing, setTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const myUserId = Cookies.get('userId') || '';
 
   useEffect(() => {
-    if (selectedChat) {
-      const chat = chats.find(c => c.id === selectedChat);
-      if (chat) {
-        setMessages([
-          {
-            id: '1',
-            sender: chat.user,
-            content: 'Hi there! I saw your profile and I\'m impressed with your experience.',
-            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-            read: true
-          },
-          {
-            id: '2',
-            sender: {
-              id: 'me',
-              name: 'Me'
-            },
-            content: 'Thank you! I\'m very interested in learning more about the opportunity.',
-            timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000),
-            read: true
-          },
-          {
-            id: '3',
-            sender: chat.user,
-            content: chat.lastMessage?.content || '',
-            timestamp: chat.lastMessage?.timestamp || new Date(),
-            read: false
-          }
-        ]);
+    const fetchChats = async () => {
+      try {
+        const token = Cookies.get('token');
+        const res = await fetch(API_ENDPOINTS.MESSAGES.CHATS, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setChats(data.chats || []);
+      } catch (error) {
+        console.error('Error fetching chats:', error);
       }
-    }
-  }, [selectedChat, chats]);
+    };
+    fetchChats();
+  }, []);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!selectedChat) return;
+    const fetchMessages = async () => {
+      try {
+        const token = Cookies.get('token');
+        const res = await fetch(API_ENDPOINTS.MESSAGES.GET(selectedChat), {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setMessages(data.messages || []);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    };
+    fetchMessages();
+  }, [selectedChat]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  useEffect(() => {
+    const handleReceive = (msg: Message) => {
+      setMessages(prev => [...prev, msg]);
+    };
+    const handleTyping = ({ userId }: { userId: string }) => {
+      if (userId === selectedChat) setTyping(true);
+    };
+    const handleStopTyping = ({ userId }: { userId: string }) => {
+      if (userId === selectedChat) setTyping(false);
+    };
+    socket.on('receiveMessage', handleReceive);
+    socket.on('userTyping', handleTyping);
+    socket.on('userStoppedTyping', handleStopTyping);
+    return () => {
+      socket.off('receiveMessage', handleReceive);
+      socket.off('userTyping', handleTyping);
+      socket.off('userStoppedTyping', handleStopTyping);
+    };
+  }, [selectedChat]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMessage.trim() || !selectedChat) return;
+    try {
+      const token = Cookies.get('token');
+      const res = await fetch(API_ENDPOINTS.MESSAGES.SEND, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify({ receiverId: selectedChat, content: newMessage }),
+      });
+      const data = await res.json();
+      if (data.message) {
+        setMessages(prev => [...prev, data.message]);
+      }
+      setNewMessage('');
+      socket.emit('stopTyping', { receiverId: selectedChat });
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  };
 
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      sender: {
-        id: 'me',
-        name: 'Me'
-      },
-      content: newMessage,
-      timestamp: new Date(),
-      read: true
-    };
-
-    setMessages(prev => [...prev, newMsg]);
-    setNewMessage('');
+  const handleInputChange = (value: string) => {
+    setNewMessage(value);
+    if (selectedChat) {
+      if (value.trim()) {
+        socket.emit('typing', { receiverId: selectedChat });
+      } else {
+        socket.emit('stopTyping', { receiverId: selectedChat });
+      }
+    }
   };
 
   const filteredChats = chats.filter(chat =>
@@ -208,11 +222,11 @@ export default function MessagesPage() {
               {messages.map(message => (
                 <div
                   key={message.id}
-                  className={`flex ${message.sender.id === 'me' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${message.sender.id === myUserId ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
                     className={`max-w-[70%] rounded-lg p-3 text-sm shadow-sm ${
-                      message.sender.id === 'me'
+                      message.sender.id === myUserId
                         ? 'bg-indigo-600 text-white'
                         : 'bg-gray-100 text-gray-800'
                     }`}
@@ -224,6 +238,10 @@ export default function MessagesPage() {
                   </div>
                 </div>
               ))}
+              {typing && (
+                <div className="text-xs text-gray-400 italic">typing...</div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
 
             <form onSubmit={handleSendMessage} className="p-4 border-t bg-gray-50">
@@ -231,7 +249,7 @@ export default function MessagesPage() {
                 <input
                   type="text"
                   value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
+                  onChange={(e) => handleInputChange(e.target.value)}
                   placeholder="Type a message..."
                   className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />

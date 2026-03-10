@@ -1,5 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 interface Team {
   id: string;
@@ -15,70 +17,24 @@ interface Team {
 }
 
 export default function TeamsPage() {
-  const [teams, setTeams] = useState<Team[]>([
-    {
-      id: '1',
-      startupName: 'TechStart AI',
-      logo: '🤖',
-      role: 'Lead Developer',
-      description: 'Join our core team to build the next generation AI platform...',
-      requirements: ['5+ years in full-stack', 'AI/ML experience', 'Team leadership'],
-      equity: '2-3%',
-      stage: 'Seed',
-      location: 'Remote',
-      category: 'tech'
-    },
-    {
-      id: '2',
-      startupName: 'GreenEnergy',
-      logo: '🌱',
-      role: 'Technical Co-Founder',
-      description: 'Looking for a technical co-founder to revolutionize renewable energy...',
-      requirements: ['Clean tech background', 'Architecture skills', 'Startup experience'],
-      equity: '15-20%',
-      stage: 'Pre-seed',
-      location: 'San Francisco',
-      category: 'cofounder'
-    },
-    {
-      id: '3',
-      startupName: 'FinNext',
-      logo: '💰',
-      role: 'Growth Strategist',
-      description: 'Help us scale a fintech product to the next level.',
-      requirements: ['B2B experience', 'Growth hacking', 'Partnerships'],
-      equity: '3-5%',
-      stage: 'Series A',
-      location: 'New York',
-      category: 'business'
-    },
-    {
-      id: '4',
-      startupName: 'EduSmart',
-      logo: '📚',
-      role: 'Curriculum Engineer',
-      description: 'Design smart learning paths using AI for school children.',
-      requirements: ['EdTech background', 'AI exposure', 'Content creation'],
-      equity: '5%',
-      stage: 'Seed',
-      location: 'Remote',
-      category: 'tech'
-    },
-    {
-      id: '5',
-      startupName: 'HealthVerse',
-      logo: '🧬',
-      role: 'Healthcare Co-Founder',
-      description: 'Seeking a visionary in healthcare to build decentralized health solutions.',
-      requirements: ['Medical domain knowledge', 'Blockchain exposure', 'Fundraising'],
-      equity: '20%',
-      stage: 'Pre-seed',
-      location: 'Boston',
-      category: 'cofounder'
-    }
-  ]);
-
+  const [teams, setTeams] = useState<Team[]>([]);
   const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const token = Cookies.get('token');
+        const res = await fetch(`${API_ENDPOINTS.STARTUPS.LIST}?includeTeamRoles=true`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setTeams(data.teams || []);
+      } catch (error) {
+        console.error('Error fetching teams:', error);
+      }
+    };
+    fetchTeams();
+  }, []);
 
   const filteredTeams = teams.filter(team =>
     filter === 'all' ? true : team.category === filter

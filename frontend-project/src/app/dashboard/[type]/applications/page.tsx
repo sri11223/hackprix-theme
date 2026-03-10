@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 import { Briefcase, CalendarCheck, Clock, CheckCircle, XCircle, Eye } from 'lucide-react';
 
 interface Application {
@@ -18,100 +19,22 @@ export default function ApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
-  const sampleApplications: Application[] = [
-    {
-      id: '1',
-      jobTitle: 'Senior Full Stack Developer',
-      company: 'TechStart AI',
-      status: 'INTERVIEW',
-      appliedDate: '2023-06-10',
-      lastUpdate: '2023-06-14',
-      nextStep: 'Technical Interview on June 16'
-    },
-    {
-      id: '2',
-      jobTitle: 'Product Manager',
-      company: 'CloudSecure',
-      status: 'PENDING',
-      appliedDate: '2023-06-13',
-      lastUpdate: '2023-06-13'
-    },
-    {
-      id: '3',
-      jobTitle: 'UI/UX Designer',
-      company: 'Creative Box',
-      status: 'REVIEWING',
-      appliedDate: '2023-06-01',
-      lastUpdate: '2023-06-11',
-      nextStep: 'Portfolio review in progress'
-    },
-    {
-      id: '4',
-      jobTitle: 'DevOps Engineer',
-      company: 'InfraFlow Inc.',
-      status: 'REJECTED',
-      appliedDate: '2023-05-20',
-      lastUpdate: '2023-06-02'
-    },
-    {
-      id: '5',
-      jobTitle: 'Machine Learning Engineer',
-      company: 'DataCrux',
-      status: 'ACCEPTED',
-      appliedDate: '2023-05-15',
-      lastUpdate: '2023-06-01',
-      nextStep: 'Offer Letter Sent'
-    },
-    {
-      id: '6',
-      jobTitle: 'Business Analyst',
-      company: 'BizMetrics Inc.',
-      status: 'REVIEWING',
-      appliedDate: '2023-06-02',
-      lastUpdate: '2023-06-07',
-      nextStep: 'HR reviewing background information'
-    },
-    {
-      id: '7',
-      jobTitle: 'Front-End Developer',
-      company: 'PixelPro',
-      status: 'PENDING',
-      appliedDate: '2023-06-11',
-      lastUpdate: '2023-06-11'
-    },
-    {
-      id: '8',
-      jobTitle: 'Technical Writer',
-      company: 'DocuChain',
-      status: 'REJECTED',
-      appliedDate: '2023-05-22',
-      lastUpdate: '2023-06-01'
-    },
-    {
-      id: '9',
-      jobTitle: 'Cloud Architect',
-      company: 'SkyHigh Systems',
-      status: 'ACCEPTED',
-      appliedDate: '2023-05-10',
-      lastUpdate: '2023-06-05',
-      nextStep: 'Contract Negotiation Phase'
-    },
-    {
-      id: '10',
-      jobTitle: 'Data Analyst',
-      company: 'InsightIQ',
-      status: 'INTERVIEW',
-      appliedDate: '2023-06-05',
-      lastUpdate: '2023-06-12',
-      nextStep: 'Final Interview on June 20'
-    }
-  ];
-
   useEffect(() => {
-    setTimeout(() => {
-      setApplications(sampleApplications);
-      setLoading(false);
-    }, 800);
+    const fetchApplications = async () => {
+      try {
+        const token = Cookies.get('token');
+        const res = await fetch(API_ENDPOINTS.JOBS.MY_APPLICATIONS, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setApplications(data.applications || []);
+      } catch (error) {
+        console.error('Error fetching applications:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchApplications();
   }, []);
 
   const getStatusColor = (status: Application['status']) => {

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import {
   FiSearch, FiBriefcase, FiUsers, FiBarChart2, 
@@ -8,6 +8,8 @@ import {
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { API_ENDPOINTS } from '@/lib/api-config';
 
 type Startup = {
   id: string;
@@ -62,454 +64,12 @@ export default function DiscoverStartups() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // Simulated API call
-        await new Promise(resolve => setTimeout(resolve, 500));
-        const mockStartups: Startup[] = [
-  {
-    id: '1',
-    name: 'NeuroTech AI',
-    logo: '/neurotech.png',
-    tagline: 'Revolutionizing brain-computer interfaces',
-    domains: ['AI', 'Neuroscience', 'Healthcare'],
-    fundingStage: 'Series A',
-    growthRate: 320,
-    teamSize: 18,
-    valuation: 45000000,
-    foundedYear: 2020,
-    location: 'San Francisco, CA',
-    website: 'https://neurotech.ai',
-    description: 'Developing non-invasive neural interfaces to help paralyzed patients communicate using only their thoughts. Our technology has shown 92% accuracy in clinical trials.',
-    stats: {
-      revenue: 1200000,
-      users: 4500,
-      retention: 78,
-      mrrGrowth: 15,
-      burnRate: 180000
-    },
-    team: [
-      { 
-        name: 'Dr. Sarah Chen', 
-        role: 'CEO & Founder',
-        experience: 'Former Google Brain, PhD Neuroscience Stanford',
-        linkedin: '#' 
-      },
-      { 
-        name: 'Mark Williams', 
-        role: 'CTO',
-        experience: 'Ex-Tesla Autopilot, MIT CS',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-10-15' },
-      { type: 'Financials', url: '#', updated: '2023-09-30' },
-      { type: 'Cap Table', url: '#', updated: '2023-08-20' }
-    ],
-    traction: [
-      { milestone: 'FDA Approval for Clinical Trials', date: '2023-06-01', impact: 'Cleared for human testing' },
-      { milestone: '$10M Series A', date: '2023-03-15', impact: 'Led by Sequoia Capital' },
-      { milestone: 'First Commercial Pilot', date: '2022-11-01', impact: 'Deployed in 3 hospitals' }
-    ]
-  },
-  {
-    id: '2',
-    name: 'GreenPack Solutions',
-    logo: '/greenpack.png',
-    tagline: 'Sustainable packaging for e-commerce',
-    domains: ['Sustainability', 'E-commerce', 'Logistics'],
-    fundingStage: 'Seed',
-    growthRate: 180,
-    teamSize: 12,
-    valuation: 15000000,
-    foundedYear: 2021,
-    location: 'Austin, TX',
-    website: 'https://greenpack.com',
-    description: 'Plant-based biodegradable packaging that decomposes in 30 days while being as durable as plastic. Currently used by 50+ DTC brands.',
-    stats: {
-      revenue: 850000,
-      users: 3200,
-      retention: 65,
-      mrrGrowth: 22,
-      burnRate: 95000
-    },
-    team: [
-      { 
-        name: 'Emma Rodriguez', 
-        role: 'Founder & CEO',
-        experience: 'Ex-Amazon Sustainability Lead',
-        linkedin: '#' 
-      },
-      { 
-        name: 'James Wilson', 
-        role: 'Head of R&D',
-        experience: 'Material Science PhD, Berkeley',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-11-01' },
-      { type: 'Financials', url: '#', updated: '2023-10-15' }
-    ],
-    traction: [
-      { milestone: 'Walmart Supplier Contract', date: '2023-09-01', impact: '$2M annual contract' },
-      { milestone: 'EPA Certification', date: '2023-07-15', impact: 'Fully compostable certification' }
-    ]
-  },
-  {
-    id: '3',
-    name: 'QuantumLeap',
-    logo: '/quantumleap.png',
-    tagline: 'Democratizing quantum computing',
-    domains: ['Quantum Computing', 'Enterprise SaaS', 'Cybersecurity'],
-    fundingStage: 'Series B',
-    growthRate: 410,
-    teamSize: 32,
-    valuation: 120000000,
-    foundedYear: 2019,
-    location: 'Boston, MA',
-    website: 'https://quantumleap.tech',
-    description: 'Making quantum computing accessible through cloud APIs with 99.9% qubit stability. Our platform reduces quantum algorithm development time from months to days.',
-    stats: {
-      revenue: 3500000,
-      users: 12000,
-      retention: 82,
-      mrrGrowth: 28,
-      burnRate: 420000
-    },
-    team: [
-      { 
-        name: 'Dr. Alan Zhang', 
-        role: 'Chief Scientist',
-        experience: 'Former IBM Quantum, PhD Physics MIT',
-        linkedin: '#' 
-      },
-      { 
-        name: 'Lisa Park', 
-        role: 'COO',
-        experience: 'Ex-AWS, Stanford MBA',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-11-20' },
-      { type: 'Financials', url: '#', updated: '2023-10-31' },
-      { type: 'Business Plan', url: '#', updated: '2023-09-15' }
-    ],
-    traction: [
-      { milestone: 'Partnership with AWS', date: '2023-08-01', impact: 'Available on AWS Marketplace' },
-      { milestone: 'Patented Qubit Tech', date: '2023-05-10', impact: '5 patents granted' }
-    ]
-  },
-  {
-    id: '4',
-    name: 'FarmFutures',
-    logo: '/farmfutures.png',
-    tagline: 'AI-powered precision agriculture',
-    domains: ['AgTech', 'AI', 'Sustainability'],
-    fundingStage: 'Series A',
-    growthRate: 275,
-    teamSize: 24,
-    valuation: 65000000,
-    foundedYear: 2020,
-    location: 'Chicago, IL',
-    website: 'https://farmfutures.io',
-    description: 'Using computer vision and IoT sensors to optimize crop yields while reducing water and fertilizer usage by up to 40%. Currently deployed across 500+ farms.',
-    stats: {
-      revenue: 2800000,
-      users: 8500,
-      retention: 71,
-      mrrGrowth: 19,
-      burnRate: 310000
-    },
-    team: [
-      { 
-        name: 'Raj Patel', 
-        role: 'CEO',
-        experience: 'Former John Deere, MS Agricultural Engineering',
-        linkedin: '#' 
-      },
-      { 
-        name: 'Sophia Kim', 
-        role: 'Head of AI',
-        experience: 'PhD Computer Vision, CMU',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-10-05' },
-      { type: 'Financials', url: '#', updated: '2023-09-30' }
-    ],
-    traction: [
-      { milestone: 'USDA Grant Award', date: '2023-07-15', impact: '$5M research grant' },
-      { milestone: 'Major Food Co Partnership', date: '2023-04-01', impact: 'Rolling out to 200 farms' }
-    ]
-  },
-  {
-    id: '5',
-    name: 'MediMatch',
-    logo: '/medimatch.png',
-    tagline: 'AI clinical trial matching',
-    domains: ['Healthcare', 'AI', 'Clinical Trials'],
-    fundingStage: 'Series B',
-    growthRate: 380,
-    teamSize: 45,
-    valuation: 220000000,
-    foundedYear: 2018,
-    location: 'New York, NY',
-    website: 'https://medimatch.ai',
-    description: 'Our platform uses NLP to match patients with clinical trials 10x faster than manual processes, accelerating drug development timelines.',
-    stats: {
-      revenue: 8500000,
-      users: 42000,
-      retention: 88,
-      mrrGrowth: 32,
-      burnRate: 680000
-    },
-    team: [
-      { 
-        name: 'Dr. Nicole Brown', 
-        role: 'Founder & CMO',
-        experience: 'Former Pfizer, MD Harvard Medical',
-        linkedin: '#' 
-      },
-      { 
-        name: 'David Wilson', 
-        role: 'CTO',
-        experience: 'Ex-Google Health, PhD NLP',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-11-15' },
-      { type: 'Financials', url: '#', updated: '2023-10-31' }
-    ],
-    traction: [
-      { milestone: 'FDA Digital Health Certification', date: '2023-09-01', impact: 'Regulatory clearance' },
-      { milestone: 'Partnership with Mayo Clinic', date: '2023-06-15', impact: 'Enterprise deployment' }
-    ]
-  },
-  {
-    id: '6',
-    name: 'EduVantage',
-    logo: '/eduvantage.png',
-    tagline: 'Personalized learning at scale',
-    domains: ['EdTech', 'AI', 'K12'],
-    fundingStage: 'Series A',
-    growthRate: 210,
-    teamSize: 28,
-    valuation: 75000000,
-    foundedYear: 2019,
-    location: 'Seattle, WA',
-    website: 'https://eduvantage.com',
-    description: 'Adaptive learning platform that personalizes educational content based on student performance and learning style, improving outcomes by 35%.',
-    stats: {
-      revenue: 4200000,
-      users: 25000,
-      retention: 76,
-      mrrGrowth: 24,
-      burnRate: 380000
-    },
-    team: [
-      { 
-        name: 'Maria Gonzalez', 
-        role: 'CEO',
-        experience: 'Former Pearson Education, EdD Columbia',
-        linkedin: '#' 
-      },
-      { 
-        name: 'Thomas Lee', 
-        role: 'CPO',
-        experience: 'Ex-Duolingo, Learning Science Expert',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-10-20' },
-      { type: 'Financials', url: '#', updated: '2023-09-30' }
-    ],
-    traction: [
-      { milestone: 'Department of Education Pilot', date: '2023-08-01', impact: '100 schools participating' },
-      { milestone: 'Learning Efficacy Study', date: '2023-05-15', impact: '35% improvement proven' }
-    ]
-  },
-  {
-    id: '7',
-    name: 'CleanRoute',
-    logo: '/cleanroute.png',
-    tagline: 'Optimizing EV charging networks',
-    domains: ['EV', 'Clean Energy', 'Logistics'],
-    fundingStage: 'Seed',
-    growthRate: 320,
-    teamSize: 15,
-    valuation: 28000000,
-    foundedYear: 2021,
-    location: 'Denver, CO',
-    website: 'https://cleanroute.ai',
-    description: 'AI-powered routing system for electric fleets that reduces charging time by 25% and extends battery life through optimized charging patterns.',
-    stats: {
-      revenue: 950000,
-      users: 3800,
-      retention: 69,
-      mrrGrowth: 27,
-      burnRate: 210000
-    },
-    team: [
-      { 
-        name: 'Alex Johnson', 
-        role: 'Founder',
-        experience: 'Former Tesla Energy, MS Electrical Engineering',
-        linkedin: '#' 
-      },
-      { 
-        name: 'Priya Patel', 
-        role: 'Head of AI',
-        experience: 'PhD Battery Optimization, Stanford',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-11-10' },
-      { type: 'Financials', url: '#', updated: '2023-10-31' }
-    ],
-    traction: [
-      { milestone: 'Pilot with FedEx Fleet', date: '2023-09-15', impact: '50 trucks equipped' },
-      { milestone: 'DOE Grant Award', date: '2023-07-01', impact: '$2.5M funding' }
-    ]
-  },
-  {
-    id: '8',
-    name: 'VoiceHive',
-    logo: '/voicehive.png',
-    tagline: 'Enterprise voice AI platform',
-    domains: ['Voice Tech', 'AI', 'Enterprise SaaS'],
-    fundingStage: 'Series B',
-    growthRate: 290,
-    teamSize: 38,
-    valuation: 180000000,
-    foundedYear: 2018,
-    location: 'San Francisco, CA',
-    website: 'https://voicehive.ai',
-    description: 'Context-aware voice assistant platform for enterprises that reduces call center volume by 40% while improving customer satisfaction scores.',
-    stats: {
-      revenue: 12500000,
-      users: 85000,
-      retention: 91,
-      mrrGrowth: 33,
-      burnRate: 750000
-    },
-    team: [
-      { 
-        name: 'Daniel Kim', 
-        role: 'CEO',
-        experience: 'Ex-Google Assistant, Speech Recognition Pioneer',
-        linkedin: '#' 
-      },
-      { 
-        name: 'Olivia Chen', 
-        role: 'CPO',
-        experience: 'Former Nuance, UX Specialist',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-11-05' },
-      { type: 'Financials', url: '#', updated: '2023-10-31' }
-    ],
-    traction: [
-      { milestone: 'Fortune 500 Deployment', date: '2023-08-15', impact: '20,000 seats licensed' },
-      { milestone: 'Accuracy Benchmark', date: '2023-06-01', impact: '95% intent recognition' }
-    ]
-  },
-  {
-    id: '9',
-    name: 'BuildStream',
-    logo: '/buildstream.png',
-    tagline: 'Construction workflow automation',
-    domains: ['Construction Tech', 'SaaS', 'AI'],
-    fundingStage: 'Series A',
-    growthRate: 240,
-    teamSize: 22,
-    valuation: 85000000,
-    foundedYear: 2020,
-    location: 'Austin, TX',
-    website: 'https://buildstream.io',
-    description: 'End-to-end platform that digitizes construction workflows, reducing project delays by 30% and cutting paperwork by 90%.',
-    stats: {
-      revenue: 3800000,
-      users: 12500,
-      retention: 83,
-      mrrGrowth: 26,
-      burnRate: 420000
-    },
-    team: [
-      { 
-        name: 'Michael Rodriguez', 
-        role: 'Founder',
-        experience: 'Former Turner Construction, Civil Engineer',
-        linkedin: '#' 
-      },
-      { 
-        name: 'Sarah Johnson', 
-        role: 'CTO',
-        experience: 'Ex-Procore, Construction Tech Expert',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-10-15' },
-      { type: 'Financials', url: '#', updated: '2023-09-30' }
-    ],
-    traction: [
-      { milestone: 'Top 5 GC Partnership', date: '2023-07-01', impact: 'Enterprise contract signed' },
-      { milestone: 'Product Certification', date: '2023-04-15', impact: 'OSHA-compliant workflows' }
-    ]
-  },
-  {
-    id: '10',
-    name: 'FinSight',
-    logo: '/finsight.png',
-    tagline: 'AI-powered financial compliance',
-    domains: ['FinTech', 'RegTech', 'AI'],
-    fundingStage: 'Series C',
-    growthRate: 180,
-    teamSize: 65,
-    valuation: 350000000,
-    foundedYear: 2017,
-    location: 'New York, NY',
-    website: 'https://finsight.ai',
-    description: 'Automating financial compliance with AI that reduces false positives by 70% while maintaining 99.9% detection accuracy for suspicious activity.',
-    stats: {
-      revenue: 28000000,
-      users: 420000,
-      retention: 95,
-      mrrGrowth: 22,
-      burnRate: 1200000
-    },
-    team: [
-      { 
-        name: 'Robert Chen', 
-        role: 'CEO',
-        experience: 'Former Goldman Sachs, FinTech Veteran',
-        linkedin: '#' 
-      },
-      { 
-        name: 'Lisa Wong', 
-        role: 'Chief Compliance Officer',
-        experience: 'Ex-SEC, Regulatory Expert',
-        linkedin: '#' 
-      }
-    ],
-    documents: [
-      { type: 'Pitch Deck', url: '#', updated: '2023-11-01' },
-      { type: 'Financials', url: '#', updated: '2023-10-31' }
-    ],
-    traction: [
-      { milestone: 'Top 10 Bank Deployment', date: '2023-09-01', impact: 'Global rollout' },
-      { milestone: 'Regulatory Approval', date: '2023-06-15', impact: 'Validated by FINRA' }
-    ]
-  }
-];
-        setStartups(mockStartups);
+        const token = Cookies.get('token');
+        const res = await fetch(`${API_ENDPOINTS.STARTUPS.LIST}?search=${searchQuery}`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        });
+        const data = await res.json();
+        setStartups(data.startups || []);
       } catch (error) {
         console.error('Error fetching startups:', error);
       } finally {
@@ -527,9 +87,19 @@ export default function DiscoverStartups() {
     )
   );
 
-  const handleConnect = (startupId: string) => {
+  const handleConnect = async (startupId: string) => {
     if (!isClient) return;
-    setConnectionRequested(prev => [...prev, startupId]);
+    try {
+      const token = Cookies.get('token');
+      await fetch(API_ENDPOINTS.CONNECTIONS.REQUEST, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify({ targetUserId: startupId }),
+      });
+      setConnectionRequested(prev => [...prev, startupId]);
+    } catch (error) {
+      console.error('Error sending connection request:', error);
+    }
   };
 
   const formatCurrency = (value: number) => {
@@ -650,7 +220,7 @@ export default function DiscoverStartups() {
 
                 <div className="flex justify-between items-center">
                   <div className="flex items-center text-sm text-gray-500">
-                    <FiUsers className="mr-1" /> {startup.teamSize} team • {startup.location}
+                    <FiUsers className="mr-1" /> {startup.teamSize} team â€¢ {startup.location}
                   </div>
                   <button 
                     onClick={(e) => {
