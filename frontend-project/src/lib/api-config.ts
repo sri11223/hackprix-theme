@@ -58,6 +58,14 @@ export const API_ENDPOINTS = {
     REQUEST: `${API_CONFIG.API_BASE_URL}/connections/request`,
     RESPOND: (id: string) => `${API_CONFIG.API_BASE_URL}/connections/${id}`,
   },
+  AI: {
+    EVALUATE_PITCH: `${API_CONFIG.API_BASE_URL}/ai/evaluate-pitch`,
+    EVALUATE_PITCH_SYNC: `${API_CONFIG.API_BASE_URL}/ai/evaluate-pitch/sync`,
+    MARKET_ANALYSIS: `${API_CONFIG.API_BASE_URL}/ai/market-analysis`,
+    MARKET_ANALYSIS_SYNC: `${API_CONFIG.API_BASE_URL}/ai/market-analysis/sync`,
+    QUICK_FEEDBACK: `${API_CONFIG.API_BASE_URL}/ai/quick-feedback`,
+    JOB_STATUS: (jobId: string) => `${API_CONFIG.API_BASE_URL}/ai/job/${jobId}`,
+  },
 };
 
 // Default headers for API requests

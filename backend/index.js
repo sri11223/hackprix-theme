@@ -78,6 +78,7 @@ const investmentRouter = require("./router/investment-router");
 const pitchRouter = require("./router/pitch-router");
 const dashboardRouter = require("./router/dashboard-router");
 const connectionRouter = require("./router/connection-router");
+const aiRouter = require("./router/ai-router");
 
 app.use("/api/auth", authrouter);
 app.use("/api/profile", profilerouter);
@@ -88,6 +89,7 @@ app.use("/api/investments", investmentRouter);
 app.use("/api/pitch-sessions", pitchRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/connections", connectionRouter);
+app.use("/api/ai", aiRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -166,6 +168,22 @@ io.on("connection", (socket) => {
         io.to(`pitch_${sessionId}`).emit("pitchReactionReceived", reaction);
     });
 
+    // Real-time AI feedback request from pitch room
+    socket.on("requestAiFeedback", async ({ sessionId, statement }) => {
+        try {
+            const aiService = require('./utility/ai-service');
+            const result = await aiService.quickPitchFeedback(statement);
+            // Broadcast AI feedback to entire pitch room — sub-100ms after LLM returns
+            io.to(`pitch_${sessionId}`).emit("aiQuickFeedback", {
+                statement,
+                ...result,
+                timestamp: new Date(),
+            });
+        } catch (err) {
+            socket.emit("aiError", { message: "AI feedback unavailable" });
+        }
+    });
+
     // Handle disconnections
     socket.on("disconnect", () => {
         const entry = Object.entries(connectedUsers).find(([, v]) => v.socketId === socket.id);
@@ -201,6 +219,12 @@ process.on('SIGTERM', () => {
 // Start server
 connectDb().then(() => {
     console.log('MongoDB Connected');
+
+    // Start AI job queue worker
+    const aiService = require('./utility/ai-service');
+    const jobQueue = require('./utility/job-queue');
+    jobQueue.startWorker(aiService, io);
+
     const PORT = process.env.PORT || 5000;
     server.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);

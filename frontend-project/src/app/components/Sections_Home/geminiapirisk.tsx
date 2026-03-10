@@ -1,9 +1,8 @@
 // components/GeminiRiskAnalyzer.tsx
 'use client';
 import { useState } from 'react';
-
-const GEMINI_API_KEY = 'AIzaSyCBSdffvU2-Kbx-Pj-nSlC6pHEgS_bnH30';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+import Cookies from 'js-cookie';
+import { API_ENDPOINTS, getAuthHeaders } from '@/lib/api-config';
 
 type RiskAnalysis = {
   riskScore: number;
@@ -43,62 +42,38 @@ export default function GeminiRiskAnalyzer() {
     setAnalysis(null);
 
     try {
-      // Prepare the prompt for Gemini
-      const prompt = `
-        Analyze this startup and provide a detailed risk assessment in JSON format:
-        
-        Business Idea: ${formData.businessIdea}
-        Business Model: ${formData.businessModel}
-        Market Size: ${formData.marketSize}
-        Competition: ${formData.competition}
-        Team Experience: ${formData.teamExperience}
-        Funding Status: ${formData.fundingStatus}
-        Financial Projections: ${formData.financialProjections}
-
-        Return a JSON response with these fields:
-        {
-          "riskScore": number (1-10),
-          "potentialFailures": string[] (top 3 risks),
-          "mitigationStrategies": string[] (top 3 recommendations),
-          "successProbability": number (0-100),
-          "comparativeAnalysis": {
-            "sectorAverage": number,
-            "competitorComparison": string,
-            "marketFit": string
-          },
-          "timelineProjection": string
-        }
-
-        Only return valid JSON, no additional text.
-      `;
-
-      const response = await fetch(GEMINI_URL, {
+      const token = Cookies.get('token') || '';
+      const response = await fetch(API_ENDPOINTS.AI.MARKET_ANALYSIS_SYNC, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(token),
+        credentials: 'include',
         body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
-          }]
-        })
+          idea: formData.businessIdea,
+          domain: formData.businessModel,
+          targetMarket: formData.marketSize,
+          competition: formData.competition,
+        }),
       });
 
+      if (!response.ok) throw new Error('Analysis failed');
       const data = await response.json();
       
-      // Extract the JSON response from Gemini's text
-      const responseText = data.candidates[0].content.parts[0].text;
-      const jsonStart = responseText.indexOf('{');
-      const jsonEnd = responseText.lastIndexOf('}') + 1;
-      const jsonResponse = responseText.slice(jsonStart, jsonEnd);
-      
-      const result = JSON.parse(jsonResponse);
-      setAnalysis(result);
+      // Map backend response to existing UI format
+      setAnalysis({
+        riskScore: Math.round(data.riskScore / 10),
+        potentialFailures: data.potentialFailures || [],
+        mitigationStrategies: data.mitigationStrategies || [],
+        successProbability: data.successProbability || 0,
+        comparativeAnalysis: {
+          sectorAverage: data.signals?.competition?.score || 5,
+          competitorComparison: data.signals?.competition?.insight || 'N/A',
+          marketFit: data.signals?.demand?.insight || 'N/A',
+        },
+        timelineProjection: data.timelineProjection || 'N/A',
+      });
     } catch (err) {
       setError('Failed to analyze startup. Please try again.');
-      console.error('Gemini API error:', err);
+      console.error('AI analysis error:', err);
     } finally {
       setLoading(false);
     }
